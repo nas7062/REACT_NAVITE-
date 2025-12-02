@@ -15,7 +15,6 @@ export default function AuthLayout() {
         options={{
           title: "로그인",
           headerShown: true,
-          headerLeft: () => null,
         }}
       />
     </Stack>
