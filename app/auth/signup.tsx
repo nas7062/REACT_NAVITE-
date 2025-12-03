@@ -87,7 +87,7 @@ export default function SignUpScreen() {
   };
   return (
     <>
-      <SafeAreaView>
+      <SafeAreaView style={styles.safeArea}>
         <View style={styles.imgContainer}>
           <Image
             style={styles.image}
@@ -121,8 +121,12 @@ export default function SignUpScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
+  safeArea: {
     flex: 1,
+    backgroundColor: colors.WHITE,
+  },
+  container: {
+    flex: 2,
     margin: 16,
     gap: 10,
   },
