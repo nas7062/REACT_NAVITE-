@@ -17,18 +17,24 @@ export default function AuthScreen() {
     setPassword("");
   };
 
-  const onLogin = () => {
-    if (email !== "" && password !== "") {
-      signInWithEmailAndPassword(auth, email, password)
-        .then((e) => {
-          alert(e.user.email);
-          clearInputs();
-          router.replace("/");
-        })
-        .catch((err) => alert(err.message));
+  const onLogin = async () => {
+    if (!email || !password) return;
+
+    try {
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      const user = userCredential.user;
+      alert(`${user.email}님 환영합니다.`);
+      clearInputs();
+
+      router.replace("/");
+    } catch (error: any) {
+      alert(error);
     }
   };
-
   return (
     <SafeAreaView style={styles.container}>
       <LinearGradient

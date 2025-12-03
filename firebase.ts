@@ -12,10 +12,8 @@ const firebaseConfig = {
   measurementId: "G-M04J2ZHSFY",
 };
 
-// Use this to initialize the firebase App
 const firebaseApp = firebase.initializeApp(firebaseConfig);
 
-// Use these for db & auth
 const db = firebaseApp.firestore();
 const auth = firebase.auth();
 

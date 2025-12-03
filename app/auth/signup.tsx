@@ -1,34 +1,81 @@
 import CTAButton from "@/components/CTAButton";
-import InputField from "@/components/InputField";
 import { auth, db } from "@/firebase";
-import { useState } from "react";
-import { Image, StyleSheet, View } from "react-native";
+import { Image, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { colors } from "@/constants";
+import { router } from "expo-router";
+import EmailInput from "@/components/EmailInput";
+import NameInput from "@/components/NameInput";
+import PasswordInput from "@/components/PasswordInput";
+import PasswordConfirmInput from "@/components/PasswordConfirm";
+const SignUpSchema = z
+  .object({
+    name: z
+      .string()
+      .trim()
+      .min(2, { message: "이름은 2글자 이상 입니다." })
+      .max(6, { message: "이름은 6글자 이하입니다." }),
+    email: z
+      .string()
+      .trim()
+      .min(1, { message: "이메일을 입력해주세요" })
+      .max(40, { message: "이메일은 40자 이하로 입력해주세요" })
+      .email({ message: "올바른 이메일 주소를 입력해주세요" }),
+    password: z
+      .string()
+      .trim()
+      .min(6, { message: "비밀번호를 6자 이상 입력해주세요" })
+      .max(20, { message: "비밀번호를 20자 이하로 입력해주세요" })
+      .regex(/^\S+$/, {
+        message: "비밀번호에는 공백을 포함할 수 없습니다",
+      })
+      .regex(/[0-9]/, {
+        message: "비밀번호에는 숫자가 최소 1개 이상 포함되어야 합니다",
+      }),
+    passwordConfirm: z.string().trim(),
+  })
+  .refine((data) => data.password === data.passwordConfirm, {
+    path: ["passwordConfirm"],
+    message: "비밀번호가 일치하지 않습니다",
+  });
+
+export type SignupFormData = z.infer<typeof SignUpSchema>;
 
 export default function SignUpScreen() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [passwordConfirm, setPasswordConfirm] = useState("");
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<SignupFormData>({
+    resolver: zodResolver(SignUpSchema),
+  });
 
-  const onHandleSignup = async () => {
+  const onHandleSignup = async (data: SignupFormData) => {
     try {
-      await createUserWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-          const user = userCredential.user;
-          const userRef = doc(db, "users", user.uid);
-          setDoc(userRef, {
-            username: name,
-            email: email,
-            uid: user.uid,
-            createdAt: new Date().toUTCString(),
-          });
-        })
-        .then(() => alert("Data uploaded"));
-    } catch (error) {
-      alert(error);
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        data.email,
+        data.password
+      );
+
+      const user = userCredential.user;
+      const userRef = doc(db, "users", user.uid);
+
+      await setDoc(userRef, {
+        username: data.name,
+        email: data.email,
+        uid: user.uid,
+        createdAt: new Date().toUTCString(),
+      });
+
+      router.replace("/");
+    } catch (error: any) {
+      console.error(error);
     }
   };
   return (
@@ -40,31 +87,26 @@ export default function SignUpScreen() {
         />
       </View>
       <View style={styles.container}>
-        <InputField
-          label="이메일"
-          placeholder="이메일을 입력해주세요."
-          textContentType="emailAddress"
-          autoFocus
-        />
-        <InputField
-          label="이름"
-          placeholder="이름을 입력해주세요."
-          textContentType="username"
-        />
-        <InputField
-          label="비밀번호"
-          placeholder="비밀번호를 입력해주세요."
-          textContentType="password"
-          secureTextEntry
-        />
-        <InputField
-          label="비밀번호확인"
-          placeholder="비밀번호를 다시 입력해주세요."
-          textContentType="password"
-          secureTextEntry
-        />
+        <EmailInput control={control} />
+        {errors.email && (
+          <Text style={styles.errorMessage}>{errors.email.message}</Text>
+        )}
+        <NameInput control={control} />
+        {errors.name && (
+          <Text style={styles.errorMessage}>{errors.name.message}</Text>
+        )}
+        <PasswordInput control={control} />
+        {errors.password && (
+          <Text style={styles.errorMessage}>{errors.password.message}</Text>
+        )}
+        <PasswordConfirmInput control={control} />
+        {errors.passwordConfirm && (
+          <Text style={styles.errorMessage}>
+            {errors.passwordConfirm.message}
+          </Text>
+        )}
       </View>
-      <CTAButton label="회원가입" onPress={onHandleSignup} />
+      <CTAButton label="회원가입" onPress={handleSubmit(onHandleSignup)} />
     </SafeAreaView>
   );
 }
@@ -83,5 +125,9 @@ const styles = StyleSheet.create({
   image: {
     width: 100,
     height: 140,
+  },
+  errorMessage: {
+    color: colors.ORANGE_600,
+    fontSize: 12,
   },
 });
