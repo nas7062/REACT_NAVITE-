@@ -13,7 +13,9 @@ function Feed({ post }: FeedProps) {
     <View style={styles.container}>
       <View style={styles.contentContainer}>
         <Text style={styles.title}>{post.title}</Text>
-        <Text style={styles.descript}>{post.description}</Text>
+        <Text numberOfLines={3} style={styles.descript}>
+          {post.description}
+        </Text>
         <View style={styles.subContainer}>
           <Text style={styles.name}>{post.author ? post.author : ""}</Text>
           <Text style={styles.sub}>조회 {post.viewCount}</Text>

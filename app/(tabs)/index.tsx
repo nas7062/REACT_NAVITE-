@@ -1,7 +1,7 @@
 import CustomButton from "@/components/CustomButton";
-import Feed from "@/components/Feed";
+import FeedList from "@/components/FeedList";
+import { colors } from "@/constants";
 import { useAuth } from "@/context/AuthContext";
-import { MOCK_POSTS } from "@/data/Mock";
 import { auth } from "@/firebase";
 import { useEffect } from "react";
 import { StyleSheet } from "react-native";
@@ -20,14 +20,16 @@ export default function HomeScreen() {
       });
   }, []);
   return (
-    <SafeAreaView>
-      {MOCK_POSTS.map((post) => (
-        <Feed post={post} key={post.id} />
-      ))}
-
+    <SafeAreaView style={styles.container}>
+      <FeedList />
       <CustomButton label="로그아웃" onPress={() => auth.signOut()} />
     </SafeAreaView>
   );
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: colors.WHITE,
+  },
+});
