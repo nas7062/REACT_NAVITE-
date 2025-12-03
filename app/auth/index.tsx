@@ -8,6 +8,7 @@ import InputField from "@/components/InputField";
 import { router } from "expo-router";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@/firebase";
+import Toast from "react-native-toast-message";
 export default function AuthScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -27,12 +28,14 @@ export default function AuthScreen() {
         password
       );
       const user = userCredential.user;
-      alert(`${user.email}님 환영합니다.`);
       clearInputs();
-
       router.replace("/");
     } catch (error: any) {
       console.error(error);
+      Toast.show({
+        type: "error",
+        text1: `로그인에 실패하였습니다.`,
+      });
     }
   };
   return (

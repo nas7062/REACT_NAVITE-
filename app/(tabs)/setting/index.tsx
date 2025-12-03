@@ -1,5 +1,4 @@
 import AuthRoute from "@/components/AuthRoute";
-
 import { StyleSheet, Text, View } from "react-native";
 
 export default function SettingScreen() {

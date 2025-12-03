@@ -13,6 +13,7 @@ export default function TabLayout() {
         name="index"
         options={{
           title: "홈",
+
           tabBarIcon: ({ color, focused }) => (
             <Ionicons
               name={focused ? "home-sharp" : "home-outline"}

@@ -13,6 +13,7 @@ import EmailInput from "@/components/EmailInput";
 import NameInput from "@/components/NameInput";
 import PasswordInput from "@/components/PasswordInput";
 import PasswordConfirmInput from "@/components/PasswordConfirm";
+import Toast from "react-native-toast-message";
 const SignUpSchema = z
   .object({
     name: z
@@ -62,20 +63,26 @@ export default function SignUpScreen() {
         data.email,
         data.password
       );
-
       const user = userCredential.user;
       const userRef = doc(db, "users", user.uid);
 
       await setDoc(userRef, {
-        username: data.name,
+        displayName: data.name,
         email: data.email,
         uid: user.uid,
         createdAt: new Date().toUTCString(),
       });
-
+      Toast.show({
+        type: "success",
+        text1: `가입이 완료되었습니다.`,
+      });
       router.replace("/auth");
     } catch (error: any) {
       console.error(error);
+      Toast.show({
+        type: "error",
+        text1: `가입이 실패하였습니다.`,
+      });
     }
   };
   return (

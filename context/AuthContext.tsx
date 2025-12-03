@@ -6,23 +6,40 @@ import React, {
   ReactNode,
 } from "react";
 import { onAuthStateChanged, User } from "firebase/auth";
-import { auth } from "@/firebase";
+import { auth, db } from "@/firebase";
+import { doc, getDoc } from "firebase/firestore";
+type UserProfile = {
+  displayName: string;
+};
 
 type AuthContextValue = {
   user: User | null;
   loading: boolean;
+  profile: UserProfile | null;
 };
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
+  const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Firebase Auth 상태 변경 리스너
-    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       setUser(firebaseUser);
+      if (firebaseUser) {
+        const userRef = doc(db, "users", firebaseUser.uid);
+        const snap = await getDoc(userRef);
+
+        if (snap.exists()) {
+          setProfile(snap.data() as UserProfile);
+        } else {
+          setProfile(null); // 문서 없으면 null
+        }
+      } else {
+        setProfile(null);
+      }
       setLoading(false);
     });
 
@@ -31,7 +48,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, loading }}>
+    <AuthContext.Provider value={{ user, loading, profile }}>
       {children}
     </AuthContext.Provider>
   );
