@@ -1,20 +1,23 @@
 import { colors } from "@/constants";
+import { Post } from "@/types";
 import Octicons from "@expo/vector-icons/Octicons";
 import React from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 
-interface FeedProps {}
+interface FeedProps {
+  post: Post;
+}
 
-function Feed({}: FeedProps) {
+function Feed({ post }: FeedProps) {
   return (
     <View style={styles.container}>
       <View style={styles.contentContainer}>
-        <Text style={styles.title}>게시글 제목</Text>
-        <Text style={styles.descript}>게시글 내용</Text>
+        <Text style={styles.title}>{post.title}</Text>
+        <Text style={styles.descript}>{post.description}</Text>
         <View style={styles.subContainer}>
-          <Text style={styles.name}>username</Text>
-          <Text style={styles.sub}>조회 132</Text>
-          <Text style={styles.sub}>찜 72</Text>
+          <Text style={styles.name}>{post.author ? post.author : ""}</Text>
+          <Text style={styles.sub}>조회 {post.viewCount}</Text>
+          <Text style={styles.sub}>찜 {post.voteCount}</Text>
         </View>
       </View>
       <View style={styles.imageContainer}>
