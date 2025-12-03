@@ -6,7 +6,7 @@ interface FeedProps {}
 function Feed({}: FeedProps) {
   return (
     <View style={styles.container}>
-      <View style={}></View>
+      <View></View>
       <View></View>
     </View>
   );
