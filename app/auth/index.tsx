@@ -12,12 +12,18 @@ export default function AuthScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const clearInputs = () => {
+    setEmail("");
+    setPassword("");
+  };
+
   const onLogin = () => {
     if (email !== "" && password !== "") {
       signInWithEmailAndPassword(auth, email, password)
         .then((e) => {
           alert(e.user.email);
-          router.push("/");
+          clearInputs();
+          router.replace("/");
         })
         .catch((err) => alert(err.message));
     }
@@ -47,7 +53,7 @@ export default function AuthScreen() {
             value={password}
             onChangeText={(value) => setPassword(value)}
             textContentType={"password"}
-            secureTextEntry 
+            secureTextEntry
             placeholder="비밀번호 6자리 이상"
           />
           <CustomButton label="로그인" onPress={onLogin} />

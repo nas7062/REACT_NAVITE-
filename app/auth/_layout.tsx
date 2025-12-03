@@ -1,4 +1,6 @@
-import { Stack } from "expo-router";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import { router, Stack } from "expo-router";
+import { TouchableOpacity } from "react-native";
 
 export default function AuthLayout() {
   return (
@@ -16,6 +18,11 @@ export default function AuthLayout() {
           title: "로그인",
           headerTitleAlign: "center",
           headerShown: true,
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => router.replace("/")}>
+              <Ionicons name={"home"} size={30} style={{ marginLeft: 10 }} />
+            </TouchableOpacity>
+          ),
         }}
       />
       <Stack.Screen

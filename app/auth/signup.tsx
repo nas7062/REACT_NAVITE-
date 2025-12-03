@@ -1,9 +1,36 @@
 import CTAButton from "@/components/CTAButton";
 import InputField from "@/components/InputField";
+import { auth, db } from "@/firebase";
+import { useState } from "react";
 import { Image, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
 
 export default function SignUpScreen() {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [passwordConfirm, setPasswordConfirm] = useState("");
+
+  const onHandleSignup = async () => {
+    try {
+      await createUserWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          const user = userCredential.user;
+          const userRef = doc(db, "users", user.uid);
+          setDoc(userRef, {
+            username: name,
+            email: email,
+            uid: user.uid,
+            createdAt: new Date().toUTCString(),
+          });
+        })
+        .then(() => alert("Data uploaded"));
+    } catch (error) {
+      alert(error);
+    }
+  };
   return (
     <SafeAreaView>
       <View style={styles.imgContainer}>
@@ -37,7 +64,7 @@ export default function SignUpScreen() {
           secureTextEntry
         />
       </View>
-      <CTAButton label="회원가입" onPress={() => console.log("회원가입")} />
+      <CTAButton label="회원가입" onPress={onHandleSignup} />
     </SafeAreaView>
   );
 }
