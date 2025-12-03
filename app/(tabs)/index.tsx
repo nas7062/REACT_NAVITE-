@@ -17,10 +17,13 @@ export default function HomeScreen() {
         type: "info",
         text1: `${profile?.displayName}님 환영합니다`,
       });
-  }, [user, profile?.displayName]);
+  }, []);
   return (
     <SafeAreaView>
       <Feed />
+      <Feed />
+      <Feed />
+
       <CustomButton label="로그아웃" onPress={() => auth.signOut()} />
     </SafeAreaView>
   );
