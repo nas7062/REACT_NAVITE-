@@ -73,7 +73,7 @@ export default function SignUpScreen() {
         createdAt: new Date().toUTCString(),
       });
 
-      router.replace("/");
+      router.replace("/auth");
     } catch (error: any) {
       console.error(error);
     }

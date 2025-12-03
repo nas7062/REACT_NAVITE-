@@ -32,7 +32,7 @@ export default function AuthScreen() {
 
       router.replace("/");
     } catch (error: any) {
-      alert(error);
+      console.error(error);
     }
   };
   return (

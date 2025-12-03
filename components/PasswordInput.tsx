@@ -15,6 +15,7 @@ function PasswordInput({ control }: ControlProps) {
           value={value}
           onChangeText={onChange}
           textContentType="password"
+          secureTextEntry
         />
       )}
     />

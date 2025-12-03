@@ -1,21 +1,14 @@
-import { useAuth } from "@/context/AuthContext";
-import { router } from "expo-router";
-import { useEffect } from "react";
+import AuthRoute from "@/components/AuthRoute";
+
 import { StyleSheet, Text, View } from "react-native";
 
 export default function SettingScreen() {
-  const { user, loading } = useAuth();
-
-  useEffect(() => {
-    if (!loading && !user) {
-      router.replace("/auth");
-    }
-  }, [user, loading]);
-
   return (
-    <View>
-      <Text>세팅 스크린</Text>
-    </View>
+    <AuthRoute>
+      <View>
+        <Text>세팅 스크린</Text>
+      </View>
+    </AuthRoute>
   );
 }
 
