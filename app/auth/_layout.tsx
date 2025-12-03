@@ -14,6 +14,15 @@ export default function AuthLayout() {
         name="index"
         options={{
           title: "로그인",
+          headerTitleAlign: "center",
+          headerShown: true,
+        }}
+      />
+      <Stack.Screen
+        name="signup"
+        options={{
+          title: "회원가입",
+          headerTitleAlign: "center",
           headerShown: true,
         }}
       />
