@@ -20,7 +20,7 @@ function CTAButton({ label, onPress }: CTAButtonProps) {
 
 const styles = StyleSheet.create({
   ctnButton: {
-    position: "fixed",
+    position: "absolute",
     bottom: 0,
     width: "100%",
     borderTopWidth: StyleSheet.hairlineWidth,

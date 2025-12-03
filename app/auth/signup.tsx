@@ -86,35 +86,37 @@ export default function SignUpScreen() {
     }
   };
   return (
-    <SafeAreaView>
-      <View style={styles.imgContainer}>
-        <Image
-          style={styles.image}
-          source={require("@/assets/images/rabbit.png")}
-        />
-      </View>
-      <View style={styles.container}>
-        <EmailInput control={control} />
-        {errors.email && (
-          <Text style={styles.errorMessage}>{errors.email.message}</Text>
-        )}
-        <NameInput control={control} />
-        {errors.name && (
-          <Text style={styles.errorMessage}>{errors.name.message}</Text>
-        )}
-        <PasswordInput control={control} />
-        {errors.password && (
-          <Text style={styles.errorMessage}>{errors.password.message}</Text>
-        )}
-        <PasswordConfirmInput control={control} />
-        {errors.passwordConfirm && (
-          <Text style={styles.errorMessage}>
-            {errors.passwordConfirm.message}
-          </Text>
-        )}
-      </View>
+    <>
+      <SafeAreaView>
+        <View style={styles.imgContainer}>
+          <Image
+            style={styles.image}
+            source={require("@/assets/images/rabbit.png")}
+          />
+        </View>
+        <View style={styles.container}>
+          <EmailInput control={control} />
+          {errors.email && (
+            <Text style={styles.errorMessage}>{errors.email.message}</Text>
+          )}
+          <NameInput control={control} />
+          {errors.name && (
+            <Text style={styles.errorMessage}>{errors.name.message}</Text>
+          )}
+          <PasswordInput control={control} />
+          {errors.password && (
+            <Text style={styles.errorMessage}>{errors.password.message}</Text>
+          )}
+          <PasswordConfirmInput control={control} />
+          {errors.passwordConfirm && (
+            <Text style={styles.errorMessage}>
+              {errors.passwordConfirm.message}
+            </Text>
+          )}
+        </View>
+      </SafeAreaView>
       <CTAButton label="회원가입" onPress={handleSubmit(onHandleSignup)} />
-    </SafeAreaView>
+    </>
   );
 }
 

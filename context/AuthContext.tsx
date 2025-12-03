@@ -16,6 +16,8 @@ type AuthContextValue = {
   user: User | null;
   loading: boolean;
   profile: UserProfile | null;
+  justSignedIn: boolean;
+  setJustSignedIn: (v: boolean) => void;
 };
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -24,7 +26,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
-
+  const [justSignedIn, setJustSignedIn] = useState(false);
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       setUser(firebaseUser);
@@ -34,8 +36,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
         if (snap.exists()) {
           setProfile(snap.data() as UserProfile);
+          setJustSignedIn(true);
         } else {
-          setProfile(null); // 문서 없으면 null
+          setProfile(null);
         }
       } else {
         setProfile(null);
@@ -43,12 +46,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setLoading(false);
     });
 
-    // 컴포넌트 언마운트 시 리스너 해제
     return unsubscribe;
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, loading, profile }}>
+    <AuthContext.Provider
+      value={{ user, loading, profile, justSignedIn, setJustSignedIn }}
+    >
       {children}
     </AuthContext.Provider>
   );

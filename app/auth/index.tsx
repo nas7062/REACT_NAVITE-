@@ -9,10 +9,11 @@ import { router } from "expo-router";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@/firebase";
 import Toast from "react-native-toast-message";
+import { useAuth } from "@/context/AuthContext";
 export default function AuthScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
+  const { user, profile } = useAuth();
   const clearInputs = () => {
     setEmail("");
     setPassword("");
@@ -28,6 +29,7 @@ export default function AuthScreen() {
         password
       );
       const user = userCredential.user;
+
       clearInputs();
       router.replace("/");
     } catch (error: any) {
