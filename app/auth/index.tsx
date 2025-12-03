@@ -6,9 +6,23 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useState } from "react";
 import InputField from "@/components/InputField";
 import { router } from "expo-router";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "@/firebase";
 export default function AuthScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const onLogin = () => {
+    if (email !== "" && password !== "") {
+      signInWithEmailAndPassword(auth, email, password)
+        .then((e) => {
+          alert(e.user.email);
+          router.push("/");
+        })
+        .catch((err) => alert(err.message));
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <LinearGradient
@@ -26,15 +40,17 @@ export default function AuthScreen() {
             onChangeText={(value) => setEmail(value)}
             textContentType="emailAddress"
             placeholder="test@naver.com"
+            autoFocus={true}
           />
           <InputField
             label="비밀번호"
             value={password}
             onChangeText={(value) => setPassword(value)}
             textContentType={"password"}
+            secureTextEntry 
             placeholder="비밀번호 6자리 이상"
           />
-          <CustomButton label="로그인" />
+          <CustomButton label="로그인" onPress={onLogin} />
           <View style={styles.messageContainer}>
             <Text style={styles.message}>아직 회원이 아니신가요?</Text>
             <Pressable onPress={() => router.push("/auth/signup")}>
