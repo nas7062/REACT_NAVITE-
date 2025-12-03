@@ -3,6 +3,7 @@ import { Post } from "@/types";
 import Octicons from "@expo/vector-icons/Octicons";
 import React from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+import Profile from "./Profile";
 
 interface FeedProps {
   post: Post;
@@ -12,12 +13,20 @@ function Feed({ post }: FeedProps) {
   return (
     <View style={styles.container}>
       <View style={styles.contentContainer}>
+        <Profile
+          imageUri={post.author.imageUri}
+          nickname={post.author.displayName}
+          createdAt={post.createdAt}
+          onPress={() => {}}
+        />
         <Text style={styles.title}>{post.title}</Text>
         <Text numberOfLines={3} style={styles.descript}>
           {post.description}
         </Text>
         <View style={styles.subContainer}>
-          <Text style={styles.name}>{post.author ? post.author : ""}</Text>
+          <Text style={styles.name}>
+            {post.author.displayName ? post.author.displayName : "kms"}
+          </Text>
           <Text style={styles.sub}>조회 {post.viewCount}</Text>
           <Text style={styles.sub}>찜 {post.voteCount}</Text>
         </View>
@@ -39,7 +48,7 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.WHITE,
     flexDirection: "row",
-    padding: 10,
+    padding: 8,
     height: 160,
     gap: 10,
   },
@@ -50,7 +59,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontWeight: "bold",
-    fontSize: 16,
+    fontSize: 14,
   },
   descript: {
     fontSize: 12,

@@ -70,7 +70,7 @@ interface Post {
   title: string;
   description: string;
   createdAt: string;
-  author: string;
+  author: User;
   imageUris: ImageUri[];
   likes: { userId: string }[];
   hasVote: boolean;
