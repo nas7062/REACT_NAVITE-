@@ -1,15 +1,23 @@
 import React from "react";
-import { Controller } from "react-hook-form";
+import { Control, Controller } from "react-hook-form";
 import InputField from "./InputField";
-import { ControlProps } from "./EmailInput";
 
-function PasswordConfirmInput({ control }: ControlProps) {
-  
+type PasswordConfirmInputProps<
+  TFieldValues extends { passwordConfirm: string }
+> = {
+  control: Control<TFieldValues>;
+};
+
+const PasswordConfirmInput = <
+  TFieldValues extends { passwordConfirm: string }
+>({
+  control,
+}: PasswordConfirmInputProps<TFieldValues>) => {
   return (
     <Controller
-      name="passwordConfirm"
+      name={"passwordConfirm" as any}
       control={control}
-      render={({ field: { onChange, value } }) => (
+      render={({ field: { onChange, value, onBlur } }) => (
         <InputField
           label="비밀번호"
           placeholder="비밀번호를 입력해주세요."
@@ -17,10 +25,11 @@ function PasswordConfirmInput({ control }: ControlProps) {
           onChangeText={onChange}
           textContentType="password"
           secureTextEntry
+          onBlur={onBlur}
         />
       )}
     />
   );
-}
+};
 
 export default PasswordConfirmInput;

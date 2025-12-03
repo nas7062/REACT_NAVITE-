@@ -1,25 +1,31 @@
 import React from "react";
-import { Controller } from "react-hook-form";
+import { Control, Controller } from "react-hook-form";
+import { TextInput } from "react-native";
 import InputField from "./InputField";
-import { ControlProps } from "./EmailInput";
 
-function PasswordInput({ control }: ControlProps) {
+type PasswordInputProps<TFieldValues extends { password: string }> = {
+  control: Control<TFieldValues>;
+};
+
+const PasswordInput = <TFieldValues extends { password: string }>({
+  control,
+}: PasswordInputProps<TFieldValues>) => {
   return (
     <Controller
-      name="password"
       control={control}
-      render={({ field: { onChange, value } }) => (
+      name={"password" as any}
+      render={({ field: { value, onChange, onBlur } }) => (
         <InputField
           label="비밀번호"
-          placeholder="비밀번호를 입력해주세요."
           value={value}
           onChangeText={onChange}
-          textContentType="password"
+          onBlur={onBlur}
           secureTextEntry
+          placeholder="비밀번호 6자리 이상"
         />
       )}
     />
   );
-}
+};
 
 export default PasswordInput;
