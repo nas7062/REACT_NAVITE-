@@ -1,14 +1,9 @@
-import CustomButton from "@/components/CustomButton";
+import CTAButton from "@/components/CTAButton";
 import InputField from "@/components/InputField";
-import { colors } from "@/constants";
 import { Image, StyleSheet, View } from "react-native";
-import {
-  SafeAreaView,
-  useSafeAreaInsets,
-} from "react-native-safe-area-context";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function SignUpScreen() {
-  const inset = useSafeAreaInsets();
   return (
     <SafeAreaView>
       <View style={styles.imgContainer}>
@@ -41,9 +36,7 @@ export default function SignUpScreen() {
           secureTextEntry
         />
       </View>
-      <View style={[styles.ctnButton, { paddingBottom: inset.bottom || 12 }]}>
-        <CustomButton label="회원가입" />
-      </View>
+      <CTAButton label="회원가입" onPress={() => console.log("회원가입")} />
     </SafeAreaView>
   );
 }
@@ -62,14 +55,5 @@ const styles = StyleSheet.create({
   image: {
     width: 100,
     height: 160,
-  },
-  ctnButton: {
-    position: "fixed",
-    bottom: 0,
-    width: "100%",
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.GRAY_300,
-    paddingTop: 12,
-    paddingHorizontal: 16,
   },
 });

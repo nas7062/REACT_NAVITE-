@@ -40,7 +40,12 @@ const styles = StyleSheet.create({
   filled: {
     backgroundColor: colors.GRAY_100,
   },
-  outLined: {},
+  outLined: {
+    borderWidth: 1,
+    borderStyle: "solid",
+    borderColor: colors.GRAY_300,
+    backgroundColor: colors.WHITE,
+  },
   input: {
     width: "100%",
     fontSize: 16,
