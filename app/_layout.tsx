@@ -5,6 +5,7 @@ import { StatusBar } from "expo-status-bar";
 import "react-native-reanimated";
 import Toast from "react-native-toast-message";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ActionSheetProvider } from "@expo/react-native-action-sheet";
 export const unstable_settings = {
   anchor: "(tabs)",
 };
@@ -12,18 +13,20 @@ const queryClient = new QueryClient();
 export default function RootLayout() {
   return (
     <>
-      <QueryClientProvider client={queryClient}>
-        <ThemeProvider value={DefaultTheme}>
-          <AuthProvider>
-            <Stack>
-              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-              <Stack.Screen name="auth" options={{ headerShown: false }} />
-              <Stack.Screen name="post" options={{ headerShown: false }} />
-            </Stack>
-            <StatusBar style="auto" />
-          </AuthProvider>
-        </ThemeProvider>
-      </QueryClientProvider>
+      <ActionSheetProvider>
+        <QueryClientProvider client={queryClient}>
+          <ThemeProvider value={DefaultTheme}>
+            <AuthProvider>
+              <Stack>
+                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                <Stack.Screen name="auth" options={{ headerShown: false }} />
+                <Stack.Screen name="post" options={{ headerShown: false }} />
+              </Stack>
+              <StatusBar style="auto" />
+            </AuthProvider>
+          </ThemeProvider>
+        </QueryClientProvider>
+      </ActionSheetProvider>
       <Toast />
     </>
   );

@@ -8,6 +8,8 @@ import { useAuth } from "@/context/AuthContext";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import "dayjs/locale/ko";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import { useActionSheet } from "@expo/react-native-action-sheet";
 dayjs.extend(relativeTime);
 dayjs.locale("ko");
 interface FeedProps {
@@ -19,7 +21,26 @@ function Feed({ post }: FeedProps) {
 
   const likeUsers = post.likes?.map((like) => like);
   const isLiked = likeUsers.includes(user?.uid as string);
+  const { showActionSheetWithOptions } = useActionSheet();
+  const cancelButtonIndex = 2;
+  const destructiveButtonIndex = 0;
+  const handlePressOption = () => {
+    const options = ["삭제", "수정", "취소"];
 
+    showActionSheetWithOptions(
+      { options, cancelButtonIndex, destructiveButtonIndex },
+      (selectedIndex?: number) => {
+        switch (selectedIndex) {
+          case destructiveButtonIndex: // 삭제
+            break;
+          case 1: // 수정
+            break;
+          case cancelButtonIndex: // 취소
+            break;
+        }
+      }
+    );
+  };
   return (
     <View style={styles.container}>
       <View style={styles.contentContainer}>
@@ -28,6 +49,16 @@ function Feed({ post }: FeedProps) {
           nickname={post.author.displayName}
           createdAt={dayjs(post.createdAt).fromNow()}
           onPress={() => {}}
+          option={
+            user?.uid === post.author.id && (
+              <Ionicons
+                name="ellipsis-horizontal"
+                size={20}
+                color={colors.BLACK}
+                onPress={handlePressOption}
+              />
+            )
+          }
         />
         <Text style={styles.title}>{post.title}</Text>
         <Text numberOfLines={3} style={styles.descript}>
