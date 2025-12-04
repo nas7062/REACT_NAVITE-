@@ -31,8 +31,8 @@ export type WriteData = z.infer<typeof WriteSchema>;
 function PostUpdateScreen() {
   const { id } = useLocalSearchParams();
   const { data: post } = useGetPostById(id as string);
-  const updatePost = useUpdatePost();
   const navigation = useNavigation();
+  const updatePost = useUpdatePost();
   const { profile } = useAuth();
   const {
     control,

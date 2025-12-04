@@ -19,6 +19,14 @@ export default function AuthLayout() {
         }}
       />
       <Stack.Screen
+        name="[id]"
+        options={{
+          title: "글상세",
+          headerTitleAlign: "center",
+          headerShown: true,
+        }}
+      />
+      <Stack.Screen
         name="update/[id]"
         options={{
           title: "글수정",

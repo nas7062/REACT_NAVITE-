@@ -1,5 +1,5 @@
 import { colors } from "@/constants";
-import React from "react";
+import React, { ReactNode } from "react";
 import {
   StyleSheet,
   Text,
@@ -11,9 +11,15 @@ import {
 interface InputFieldProps extends TextInputProps {
   label?: string;
   variant?: "filled" | "outLined";
+  rightChild?: ReactNode;
 }
 
-function InputField({ label, variant = "filled", ...props }: InputFieldProps) {
+function InputField({
+  label,
+  variant = "filled",
+  rightChild = null,
+  ...props
+}: InputFieldProps) {
   return (
     <View>
       {label && <Text style={styles.label}>{label}</Text>}
@@ -29,6 +35,7 @@ function InputField({ label, variant = "filled", ...props }: InputFieldProps) {
           {...props}
           placeholderTextColor={colors.GRAY_500}
         />
+        {rightChild}
       </View>
     </View>
   );

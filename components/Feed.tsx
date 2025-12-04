@@ -16,9 +16,10 @@ dayjs.extend(relativeTime);
 dayjs.locale("ko");
 interface FeedProps {
   post: Post;
+  isDetail?: boolean;
 }
 
-function Feed({ post }: FeedProps) {
+function Feed({ post, isDetail = false }: FeedProps) {
   const { user } = useAuth();
 
   const likeUsers = post.likes?.map((like) => like);
@@ -51,8 +52,20 @@ function Feed({ post }: FeedProps) {
       }
     );
   };
+
+  const handlePressFeed = () => {
+    if (!isDetail) {
+      router.push({
+        pathname: "/post/[id]",
+        params: { id: post.docId },
+      });
+    }
+  };
+
+  const ContainerComponent = isDetail ? View : Pressable;
+
   return (
-    <View style={styles.container}>
+    <ContainerComponent style={styles.container} onPress={handlePressFeed}>
       <View style={styles.contentContainer}>
         <Profile
           imageUri={post.author.imageUri}
@@ -93,7 +106,7 @@ function Feed({ post }: FeedProps) {
           />
         </Pressable>
       </View>
-    </View>
+    </ContainerComponent>
   );
 }
 
