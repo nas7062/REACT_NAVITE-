@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
   },
   multilineInput: {
     textAlignVertical: "top",
-    height: 200,
+    height: 180,
   },
 });
 

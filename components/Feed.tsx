@@ -19,7 +19,7 @@ function Feed({ post }: FeedProps) {
 
   const likeUsers = post.likes?.map((like) => like);
   const isLiked = likeUsers.includes(user?.uid as string);
-  console.log(likeUsers, user?.uid);
+
   return (
     <View style={styles.container}>
       <View style={styles.contentContainer}>

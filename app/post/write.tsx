@@ -3,15 +3,16 @@ import DescriptInput from "@/components/DescriptInput";
 import TitleInput from "@/components/TitleInput";
 import { colors } from "@/constants";
 import { zodResolver } from "@hookform/resolvers/zod";
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Image, SafeAreaView, StyleSheet, Text, View } from "react-native";
 import { z } from "zod";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { CreatePost } from "@/api/post";
-import { router } from "expo-router";
+import { router, useNavigation } from "expo-router";
 import { useAuth } from "@/context/AuthContext";
 import { useCreatePost } from "@/hooks/useCreatePost";
+import CustomButton from "@/components/CustomButton";
 const WriteSchema = z.object({
   title: z
     .string()
@@ -35,6 +36,7 @@ function WriteScreenPage() {
   } = useForm<WriteData>({
     resolver: zodResolver(WriteSchema),
   });
+  const navigation = useNavigation();
   const { profile } = useAuth();
   const { mutate } = useCreatePost();
   const onHandleWrite = async (data: WriteData) => {
@@ -46,7 +48,18 @@ function WriteScreenPage() {
       profile,
     });
   };
-
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <CustomButton
+          label="저장"
+          size="medium"
+          variant="standard"
+          onPress={handleSubmit(onHandleWrite)}
+        />
+      ),
+    });
+  }, [handleSubmit, navigation]);
   return (
     <>
       <SafeAreaView style={styles.safeArea}>
@@ -69,7 +82,6 @@ function WriteScreenPage() {
           </View>
         </KeyboardAwareScrollView>
       </SafeAreaView>
-      <CTAButton label="회원가입" onPress={handleSubmit(onHandleWrite)} />
     </>
   );
 }
