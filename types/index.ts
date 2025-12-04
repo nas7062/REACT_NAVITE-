@@ -75,7 +75,7 @@ interface Post {
   createdAt: string;
   author: User;
   imageUris: ImageUri[];
-  likes: { userId: string }[];
+  likes: string[];
   hasVote: boolean;
   voteCount: number;
   commentCount: number;

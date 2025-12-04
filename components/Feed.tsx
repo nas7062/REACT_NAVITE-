@@ -4,19 +4,29 @@ import Octicons from "@expo/vector-icons/Octicons";
 import React from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import Profile from "./Profile";
-
+import { useAuth } from "@/context/AuthContext";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+import "dayjs/locale/ko";
+dayjs.extend(relativeTime);
+dayjs.locale("ko");
 interface FeedProps {
   post: Post;
 }
 
 function Feed({ post }: FeedProps) {
+  const { user } = useAuth();
+
+  const likeUsers = post.likes?.map((like) => like);
+  const isLiked = likeUsers.includes(user?.uid as string);
+  console.log(likeUsers, user?.uid);
   return (
     <View style={styles.container}>
       <View style={styles.contentContainer}>
         <Profile
           imageUri={post.author.imageUri}
           nickname={post.author.displayName}
-          createdAt={post.createdAt}
+          createdAt={dayjs(post.createdAt).fromNow()}
           onPress={() => {}}
         />
         <Text style={styles.title}>{post.title}</Text>
@@ -24,11 +34,9 @@ function Feed({ post }: FeedProps) {
           {post.description}
         </Text>
         <View style={styles.subContainer}>
-          <Text style={styles.name}>
-            {post.author.displayName ? post.author.displayName : "kms"}
-          </Text>
           <Text style={styles.sub}>조회 {post.viewCount}</Text>
-          <Text style={styles.sub}>찜 {post.voteCount}</Text>
+          <Text style={styles.comments}>댓글 {post.commentCount}</Text>
+          <Text style={styles.sub}>찜 {post.likes.length}</Text>
         </View>
       </View>
       <View style={styles.imageContainer}>
@@ -37,7 +45,11 @@ function Feed({ post }: FeedProps) {
           style={styles.image}
         />
         <Pressable style={styles.likeButton}>
-          <Octicons name="heart-fill" size={24} color={colors.ORANGE_600} />
+          <Octicons
+            name={isLiked ? "heart-fill" : "heart"}
+            size={24}
+            color={colors.ORANGE_600}
+          />
         </Pressable>
       </View>
     </View>
@@ -65,9 +77,9 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: colors.GRAY_700,
   },
-  name: {
-    fontWeight: "bold",
+  comments: {
     fontSize: 10,
+    color: colors.GRAY_700,
   },
   sub: {
     fontSize: 10,
