@@ -11,6 +11,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { CreatePost } from "@/api/post";
 import { router } from "expo-router";
 import { useAuth } from "@/context/AuthContext";
+import { useCreatePost } from "@/hooks/useCreatePost";
 const WriteSchema = z.object({
   title: z
     .string()
@@ -34,18 +35,16 @@ function WriteScreenPage() {
   } = useForm<WriteData>({
     resolver: zodResolver(WriteSchema),
   });
-  const { user, profile } = useAuth();
-
+  const { profile } = useAuth();
+  const { mutate } = useCreatePost();
   const onHandleWrite = async (data: WriteData) => {
     if (!profile) return;
-    console.log(profile);
-    const response = await CreatePost({
+    mutate({
       title: data.title,
       description: data.descript,
       imageUris: [],
       profile,
     });
-    if (response) router.replace("/");
   };
 
   return (
