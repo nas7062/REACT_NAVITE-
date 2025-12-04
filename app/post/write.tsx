@@ -7,7 +7,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { Image, SafeAreaView, StyleSheet, Text, View } from "react-native";
 import { z } from "zod";
-
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 const WriteSchema = z.object({
   title: z
     .string()
@@ -37,22 +37,24 @@ function WriteScreenPage() {
   return (
     <>
       <SafeAreaView style={styles.safeArea}>
-        <View style={styles.imgContainer}>
-          <Image
-            style={styles.image}
-            source={require("@/assets/images/rabbit.png")}
-          />
-        </View>
-        <View style={styles.container}>
-          <TitleInput control={control} />
-          {errors.title && (
-            <Text style={styles.errorMessage}>{errors.title.message}</Text>
-          )}
-          <DescriptInput control={control} />
-          {errors.descript && (
-            <Text style={styles.errorMessage}>{errors.descript.message}</Text>
-          )}
-        </View>
+        <KeyboardAwareScrollView>
+          <View style={styles.imgContainer}>
+            <Image
+              style={styles.image}
+              source={require("@/assets/images/rabbit.png")}
+            />
+          </View>
+          <View style={styles.container}>
+            <TitleInput control={control} />
+            {errors.title && (
+              <Text style={styles.errorMessage}>{errors.title.message}</Text>
+            )}
+            <DescriptInput control={control} />
+            {errors.descript && (
+              <Text style={styles.errorMessage}>{errors.descript.message}</Text>
+            )}
+          </View>
+        </KeyboardAwareScrollView>
       </SafeAreaView>
       <CTAButton label="회원가입" onPress={handleSubmit(onHandleWrite)} />
     </>

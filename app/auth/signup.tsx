@@ -14,6 +14,7 @@ import NameInput from "@/components/NameInput";
 import PasswordInput from "@/components/PasswordInput";
 import PasswordConfirmInput from "@/components/PasswordConfirm";
 import Toast from "react-native-toast-message";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 const SignUpSchema = z
   .object({
     name: z
@@ -88,32 +89,34 @@ export default function SignUpScreen() {
   return (
     <>
       <SafeAreaView style={styles.safeArea}>
-        <View style={styles.imgContainer}>
-          <Image
-            style={styles.image}
-            source={require("@/assets/images/rabbit.png")}
-          />
-        </View>
-        <View style={styles.container}>
-          <EmailInput control={control} />
-          {errors.email && (
-            <Text style={styles.errorMessage}>{errors.email.message}</Text>
-          )}
-          <NameInput control={control} />
-          {errors.name && (
-            <Text style={styles.errorMessage}>{errors.name.message}</Text>
-          )}
-          <PasswordInput control={control} />
-          {errors.password && (
-            <Text style={styles.errorMessage}>{errors.password.message}</Text>
-          )}
-          <PasswordConfirmInput control={control} />
-          {errors.passwordConfirm && (
-            <Text style={styles.errorMessage}>
-              {errors.passwordConfirm.message}
-            </Text>
-          )}
-        </View>
+        <KeyboardAwareScrollView>
+          <View style={styles.imgContainer}>
+            <Image
+              style={styles.image}
+              source={require("@/assets/images/rabbit.png")}
+            />
+          </View>
+          <View style={styles.container}>
+            <EmailInput control={control} />
+            {errors.email && (
+              <Text style={styles.errorMessage}>{errors.email.message}</Text>
+            )}
+            <NameInput control={control} />
+            {errors.name && (
+              <Text style={styles.errorMessage}>{errors.name.message}</Text>
+            )}
+            <PasswordInput control={control} />
+            {errors.password && (
+              <Text style={styles.errorMessage}>{errors.password.message}</Text>
+            )}
+            <PasswordConfirmInput control={control} />
+            {errors.passwordConfirm && (
+              <Text style={styles.errorMessage}>
+                {errors.passwordConfirm.message}
+              </Text>
+            )}
+          </View>
+        </KeyboardAwareScrollView>
       </SafeAreaView>
       <CTAButton label="회원가입" onPress={handleSubmit(onHandleSignup)} />
     </>
