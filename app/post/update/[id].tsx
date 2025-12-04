@@ -7,10 +7,12 @@ import { useForm } from "react-hook-form";
 import { Image, SafeAreaView, StyleSheet, Text, View } from "react-native";
 import { z } from "zod";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { useNavigation } from "expo-router";
+import { router, useLocalSearchParams, useNavigation } from "expo-router";
 import { useAuth } from "@/context/AuthContext";
 import { useCreatePost } from "@/hooks/useCreatePost";
 import CustomButton from "@/components/CustomButton";
+import { useGetPostById } from "@/hooks/useGetPostById";
+import { useUpdatePost } from "@/hooks/useUpdatePost";
 const WriteSchema = z.object({
   title: z
     .string()
@@ -26,38 +28,61 @@ const WriteSchema = z.object({
 
 export type WriteData = z.infer<typeof WriteSchema>;
 
-function WriteScreenPage() {
+function PostUpdateScreen() {
+  const { id } = useLocalSearchParams();
+  const { data: post } = useGetPostById(id as string);
+  const updatePost = useUpdatePost();
+  const navigation = useNavigation();
+  const { profile } = useAuth();
   const {
     control,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<WriteData>({
     resolver: zodResolver(WriteSchema),
   });
-  const navigation = useNavigation();
-  const { profile } = useAuth();
-  const { mutate } = useCreatePost();
-  const onHandleWrite = async (data: WriteData) => {
-    if (!profile) return;
-    mutate({
-      title: data.title,
-      description: data.descript,
-      imageUris: [],
-      profile,
-    });
+
+  useEffect(() => {
+    if (post) {
+      reset({
+        title: post.title,
+        descript: post.description,
+      });
+    }
+  }, [post, reset]);
+
+  const onHandleWrite = (data: WriteData) => {
+    if (!profile || !id) return;
+
+    updatePost.mutate(
+      {
+        docId: id as string,
+        body: {
+          title: data.title,
+          description: data.descript,
+          imageUris: [],
+          profile,
+        },
+      },
+      {
+        onSuccess: () => router.back(),
+      }
+    );
   };
+
   useEffect(() => {
     navigation.setOptions({
       headerRight: () => (
         <CustomButton
-          label="저장"
+          label="수정"
           size="medium"
           variant="standard"
           onPress={handleSubmit(onHandleWrite)}
         />
       ),
     });
-  }, [handleSubmit, navigation]);
+  }, [handleSubmit, navigation, onHandleWrite]);
   return (
     <>
       <SafeAreaView style={styles.safeArea}>
@@ -109,4 +134,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default WriteScreenPage;
+export default PostUpdateScreen;

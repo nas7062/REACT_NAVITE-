@@ -18,6 +18,14 @@ export default function AuthLayout() {
           headerShown: true,
         }}
       />
+      <Stack.Screen
+        name="update/[id]"
+        options={{
+          title: "글수정",
+          headerTitleAlign: "center",
+          headerShown: true,
+        }}
+      />
     </Stack>
   );
 }

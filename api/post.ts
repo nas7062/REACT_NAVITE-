@@ -10,6 +10,7 @@ import {
   startAfter,
   getDocs,
   deleteDoc,
+  updateDoc,
 } from "firebase/firestore";
 import { db } from "@/firebase";
 import { CreatePostDto, Post, User } from "@/types/index";
@@ -150,4 +151,95 @@ export async function getPosts({
 
 export async function deletePost(DocId: string): Promise<void> {
   await deleteDoc(doc(db, "posts", DocId));
+}
+
+export async function getPostById(docId: string): Promise<Post | null> {
+  // 1) 문서 ref
+  const ref = doc(db, "posts", docId);
+
+  const snap = await getDoc(ref);
+
+  if (!snap.exists()) {
+    return null;
+  }
+
+  const data = snap.data() as any;
+
+  const createdAt =
+    data.createdAt?.toDate?.().toISOString?.() ?? data.createdAt ?? "";
+
+  const post: Post = {
+    docId: snap.id,
+    id: data.id,
+    userId: data.userId,
+    title: data.title,
+    description: data.description,
+    createdAt,
+    author: data.author,
+    imageUris: data.imageUris ?? [],
+    likes: data.likes ?? [],
+    hasVote: data.hasVote ?? false,
+    voteCount: data.voteCount ?? 0,
+    commentCount: data.commentCount ?? 0,
+    viewCount: data.viewCount ?? 0,
+    votes: data.votes ?? [],
+    comments: data.comments ?? [],
+  };
+
+  return post;
+}
+
+export async function updatePost({
+  docId,
+  body,
+}: {
+  docId: string;
+  body: CreatePostDto;
+}): Promise<Post> {
+  const auth = getAuth();
+  const currentUser = auth.currentUser;
+
+  if (!currentUser) {
+    throw new Error("로그인된 사용자가 없습니다.");
+  }
+
+  const author: User = {
+    id: currentUser.uid,
+    displayName: body.profile.displayName ?? currentUser.displayName,
+    imageUri: currentUser.photoURL ?? "",
+  };
+  const ref = doc(db, "posts", docId);
+  await updateDoc(ref, {
+    title: body.title,
+    description: body.description,
+    imageUris: body.imageUris ?? [],
+    author,
+    updatedAt: serverTimestamp(),
+  });
+
+  const snap = await getDoc(ref);
+  const data = snap.data();
+
+  const createdAtString =
+    data?.createdAt?.toDate().toISOString() ?? new Date().toISOString();
+
+  const post: Post = {
+    docId: snap.id,
+    id: data?.id,
+    userId: currentUser.uid,
+    title: body.title,
+    description: body.description,
+    createdAt: createdAtString,
+    author,
+    imageUris: body.imageUris ?? [],
+    likes: [],
+    hasVote: false,
+    voteCount: 0,
+    commentCount: 0,
+    viewCount: 0,
+    votes: [],
+    comments: [],
+  };
+
+  return post;
 }

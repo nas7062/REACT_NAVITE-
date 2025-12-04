@@ -11,6 +11,7 @@ import "dayjs/locale/ko";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useActionSheet } from "@expo/react-native-action-sheet";
 import { useDeletePost } from "@/hooks/useDeletePost";
+import { router } from "expo-router";
 dayjs.extend(relativeTime);
 dayjs.locale("ko");
 interface FeedProps {
@@ -39,8 +40,12 @@ function Feed({ post }: FeedProps) {
             deletePost(post.docId);
             break;
           case 1: // 수정
+            router.push({
+              pathname: "/post/update/[id]",
+              params: { id: post.docId },
+            });
             break;
-          case cancelButtonIndex: // 취소
+          case cancelButtonIndex:
             break;
         }
       }
