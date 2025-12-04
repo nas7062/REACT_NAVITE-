@@ -10,6 +10,7 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import "dayjs/locale/ko";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useActionSheet } from "@expo/react-native-action-sheet";
+import { useDeletePost } from "@/hooks/useDeletePost";
 dayjs.extend(relativeTime);
 dayjs.locale("ko");
 interface FeedProps {
@@ -22,8 +23,11 @@ function Feed({ post }: FeedProps) {
   const likeUsers = post.likes?.map((like) => like);
   const isLiked = likeUsers.includes(user?.uid as string);
   const { showActionSheetWithOptions } = useActionSheet();
+  const { mutate: deletePost } = useDeletePost();
+
   const cancelButtonIndex = 2;
   const destructiveButtonIndex = 0;
+
   const handlePressOption = () => {
     const options = ["삭제", "수정", "취소"];
 
@@ -31,7 +35,8 @@ function Feed({ post }: FeedProps) {
       { options, cancelButtonIndex, destructiveButtonIndex },
       (selectedIndex?: number) => {
         switch (selectedIndex) {
-          case destructiveButtonIndex: // 삭제
+          case destructiveButtonIndex:
+            deletePost(post.docId);
             break;
           case 1: // 수정
             break;

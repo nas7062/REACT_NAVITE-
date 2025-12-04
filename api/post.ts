@@ -9,6 +9,7 @@ import {
   doc,
   startAfter,
   getDocs,
+  deleteDoc,
 } from "firebase/firestore";
 import { db } from "@/firebase";
 import { CreatePostDto, Post, User } from "@/types/index";
@@ -28,10 +29,10 @@ export async function CreatePost(body: CreatePostDto): Promise<Post> {
     imageUri: currentUser.photoURL ?? "",
   };
 
-  const numericId = Date.now();
+  const NumberId = Date.now();
 
   const docRef = await addDoc(collection(db, "posts"), {
-    id: numericId,
+    id: NumberId,
     userId: currentUser.uid,
     title: body.title,
     description: body.description,
@@ -54,7 +55,8 @@ export async function CreatePost(body: CreatePostDto): Promise<Post> {
     data?.createdAt?.toDate().toISOString() ?? new Date().toISOString();
 
   const post: Post = {
-    id: numericId,
+    docId: docRef.id,
+    id: NumberId,
     userId: currentUser.uid,
     title: body.title,
     description: body.description,
@@ -118,6 +120,7 @@ export async function getPosts({
       data.createdAt?.toDate?.().toISOString?.() ?? data.createdAt ?? "";
 
     const post: Post = {
+      docId: d.id,
       id: data.id,
       userId: data.userId,
       title: data.title,
@@ -143,4 +146,8 @@ export async function getPosts({
     posts,
     nextCursor: lastDoc ? lastDoc.id : undefined,
   };
+}
+
+export async function deletePost(DocId: string): Promise<void> {
+  await deleteDoc(doc(db, "posts", DocId));
 }

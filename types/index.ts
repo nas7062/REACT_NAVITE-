@@ -68,6 +68,7 @@ interface PostComment extends Comment {
 }
 
 interface Post {
+  docId: string;
   id: number;
   userId: string;
   title: string;

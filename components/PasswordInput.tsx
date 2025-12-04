@@ -1,6 +1,5 @@
 import React from "react";
 import { Control, Controller } from "react-hook-form";
-import { TextInput } from "react-native";
 import InputField from "./InputField";
 
 type PasswordInputProps<TFieldValues extends { password: string }> = {
