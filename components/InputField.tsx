@@ -17,9 +17,15 @@ function InputField({ label, variant = "filled", ...props }: InputFieldProps) {
   return (
     <View>
       {label && <Text style={styles.label}>{label}</Text>}
-      <View style={[styles.container, styles[variant]]}>
+      <View
+        style={[
+          styles.container,
+          styles[variant],
+          props.multiline && styles.multiline,
+        ]}
+      >
         <TextInput
-          style={styles.input}
+          style={[styles.input, props.multiline && styles.multilineInput]}
           {...props}
           placeholderTextColor={colors.GRAY_500}
         />
@@ -56,6 +62,15 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: colors.GRAY_700,
     marginBottom: 5,
+  },
+  multiline: {
+    alignItems: "flex-start",
+    paddingVertical: 10,
+    height: 200,
+  },
+  multilineInput: {
+    textAlignVertical: "top",
+    height: 200,
   },
 });
 

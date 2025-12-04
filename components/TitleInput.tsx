@@ -1,28 +1,27 @@
 import React from "react";
 import { Control, Controller } from "react-hook-form";
 import InputField from "./InputField";
-import { SignupFormData } from "@/app/auth/signup";
+import { WriteData } from "@/app/post/write";
 
 type Props = {
-  control: Control<SignupFormData>;
+  control: Control<WriteData>;
 };
 
-function NameInput({ control }: Props) {
+function TitleInput({ control }: Props) {
   return (
     <Controller
-      name="name"
+      name="title"
       control={control}
       render={({ field: { onChange, value } }) => (
         <InputField
-          label="이름"
-          placeholder="이름을 입력해주세요."
+          label="제목"
+          placeholder="제목을 입력해주세요."
           value={value}
           onChangeText={onChange}
-          textContentType="username"
         />
       )}
     />
   );
 }
 
-export default NameInput;
+export default TitleInput;
