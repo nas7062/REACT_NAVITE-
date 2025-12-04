@@ -73,15 +73,15 @@ export async function CreatePost(body: CreatePostDto): Promise<Post> {
   return post;
 }
 
-const PAGE_SIZE = 10; // 한 번에 가져올 개수
+const PAGE_SIZE = 5;
 
 type GetPostsArgs = {
-  pageParam?: string; // 이전 페이지에서 받아온 마지막 문서 id
+  pageParam?: string;
 };
 
-type GetPostsResult = {
+export type GetPostsResult = {
   posts: Post[];
-  nextCursor?: string; // 다음 페이지 요청할 때 쓸 cursor
+  nextCursor?: string;
 };
 
 export async function getPosts({
@@ -95,11 +95,9 @@ export async function getPosts({
     // 첫 페이지
     q = query(baseRef, orderBy("createdAt", "desc"), limit(PAGE_SIZE));
   } else {
-    // 다음 페이지: pageParam(마지막 문서 id) 기준 startAfter
     const cursorDoc = await getDoc(doc(db, "posts", pageParam));
 
     if (!cursorDoc.exists()) {
-      // cursor 문서가 없으면 더 이상 가져올 게 없다고 판단
       return { posts: [], nextCursor: undefined };
     }
 
@@ -116,12 +114,11 @@ export async function getPosts({
   const posts: Post[] = snap.docs.map((d) => {
     const data = d.data() as any;
 
-    // createdAt이 Timestamp라면 string으로 변환
     const createdAt =
       data.createdAt?.toDate?.().toISOString?.() ?? data.createdAt ?? "";
 
     const post: Post = {
-      id: data.id, // number로 저장해둔 필드
+      id: data.id,
       userId: data.userId,
       title: data.title,
       description: data.description,

@@ -1,16 +1,37 @@
-import { MOCK_POSTS } from "@/data/Mock";
 import React from "react";
-import { FlatList, StyleSheet } from "react-native";
+import { FlatList, StyleSheet, Text, View } from "react-native";
 import Feed from "./Feed";
 import { colors } from "@/constants";
+import { useInfinitePosts } from "@/hooks/useInfinityPosts";
 
 function FeedList() {
+  const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
+    useInfinitePosts();
+
+  const posts = data?.pages.flatMap((page) => page.posts) ?? [];
+
+  const loadMore = () => {
+    if (hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <View>
+        <Text>loading...</Text>
+      </View>
+    );
+  }
+
   return (
     <FlatList
-      data={MOCK_POSTS}
+      data={posts}
       renderItem={({ item }) => <Feed post={item} />}
       keyExtractor={(item) => String(item.id)}
       contentContainerStyle={styles.contentContainer}
+      onEndReached={loadMore}
+      onEndReachedThreshold={0.5}
     />
   );
 }
