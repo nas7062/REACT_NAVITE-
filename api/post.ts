@@ -1,0 +1,149 @@
+import {
+  addDoc,
+  collection,
+  serverTimestamp,
+  getDoc,
+  query,
+  orderBy,
+  limit,
+  doc,
+  startAfter,
+  getDocs,
+} from "firebase/firestore";
+import { db } from "@/firebase";
+import { CreatePostDto, Post, User } from "@/types/index";
+import { getAuth } from "firebase/auth";
+
+export async function CreatePost(body: CreatePostDto): Promise<Post> {
+  const auth = getAuth();
+  const currentUser = auth.currentUser;
+  console.log(body.profile.displayName);
+  if (!currentUser) {
+    throw new Error("로그인된 사용자가 없습니다.");
+  }
+
+  const author: User = {
+    id: currentUser.uid,
+    displayName: body.profile.displayName ?? currentUser.displayName,
+    imageUri: currentUser.photoURL ?? "",
+  };
+
+  const numericId = Date.now();
+
+  const docRef = await addDoc(collection(db, "posts"), {
+    id: numericId,
+    userId: currentUser.uid,
+    title: body.title,
+    description: body.description,
+    createdAt: serverTimestamp(),
+    author,
+    imageUris: body.imageUris ?? [],
+    likes: [],
+    hasVote: false,
+    voteCount: 0,
+    commentCount: 0,
+    viewCount: 0,
+    votes: [],
+    comments: [],
+  });
+
+  const snap = await getDoc(docRef);
+  const data = snap.data();
+
+  const createdAtString =
+    data?.createdAt?.toDate().toISOString() ?? new Date().toISOString();
+
+  const post: Post = {
+    id: numericId,
+    userId: currentUser.uid,
+    title: body.title,
+    description: body.description,
+    createdAt: createdAtString,
+    author,
+    imageUris: body.imageUris ?? [],
+    likes: [],
+    hasVote: false,
+    voteCount: 0,
+    commentCount: 0,
+    viewCount: 0,
+    votes: [],
+    comments: [],
+  };
+
+  return post;
+}
+
+const PAGE_SIZE = 10; // 한 번에 가져올 개수
+
+type GetPostsArgs = {
+  pageParam?: string; // 이전 페이지에서 받아온 마지막 문서 id
+};
+
+type GetPostsResult = {
+  posts: Post[];
+  nextCursor?: string; // 다음 페이지 요청할 때 쓸 cursor
+};
+
+export async function getPosts({
+  pageParam,
+}: GetPostsArgs): Promise<GetPostsResult> {
+  const baseRef = collection(db, "posts");
+
+  let q;
+
+  if (!pageParam) {
+    // 첫 페이지
+    q = query(baseRef, orderBy("createdAt", "desc"), limit(PAGE_SIZE));
+  } else {
+    // 다음 페이지: pageParam(마지막 문서 id) 기준 startAfter
+    const cursorDoc = await getDoc(doc(db, "posts", pageParam));
+
+    if (!cursorDoc.exists()) {
+      // cursor 문서가 없으면 더 이상 가져올 게 없다고 판단
+      return { posts: [], nextCursor: undefined };
+    }
+
+    q = query(
+      baseRef,
+      orderBy("createdAt", "desc"),
+      startAfter(cursorDoc),
+      limit(PAGE_SIZE)
+    );
+  }
+
+  const snap = await getDocs(q);
+
+  const posts: Post[] = snap.docs.map((d) => {
+    const data = d.data() as any;
+
+    // createdAt이 Timestamp라면 string으로 변환
+    const createdAt =
+      data.createdAt?.toDate?.().toISOString?.() ?? data.createdAt ?? "";
+
+    const post: Post = {
+      id: data.id, // number로 저장해둔 필드
+      userId: data.userId,
+      title: data.title,
+      description: data.description,
+      createdAt,
+      author: data.author,
+      imageUris: data.imageUris ?? [],
+      likes: data.likes ?? [],
+      hasVote: data.hasVote ?? false,
+      voteCount: data.voteCount ?? 0,
+      commentCount: data.commentCount ?? 0,
+      viewCount: data.viewCount ?? 0,
+      votes: data.votes ?? [],
+      comments: data.comments ?? [],
+    };
+
+    return post;
+  });
+
+  const lastDoc = snap.docs[snap.docs.length - 1];
+
+  return {
+    posts,
+    nextCursor: lastDoc ? lastDoc.id : undefined,
+  };
+}

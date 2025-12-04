@@ -8,18 +8,20 @@ import { useForm } from "react-hook-form";
 import { Image, SafeAreaView, StyleSheet, Text, View } from "react-native";
 import { z } from "zod";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { CreatePost } from "@/api/post";
+import { router } from "expo-router";
+import { useAuth } from "@/context/AuthContext";
 const WriteSchema = z.object({
   title: z
     .string()
     .trim()
-    .min(2, { message: "이름은 2글자 이상 입니다." })
-    .max(6, { message: "이름은 6글자 이하입니다." }),
+    .min(2, { message: "제목은 2글자 이상 입니다." })
+    .max(20, { message: "제목은 20글자 이하입니다." }),
   descript: z
     .string()
     .trim()
-    .min(1, { message: "이메일을 입력해주세요" })
-    .max(40, { message: "이메일은 40자 이하로 입력해주세요" })
-    .email({ message: "올바른 이메일 주소를 입력해주세요" }),
+    .min(1, { message: "내용을 입력해주세요" })
+    .max(100, { message: "내용은 100자 이하로 입력해주세요" }),
 });
 
 export type WriteData = z.infer<typeof WriteSchema>;
@@ -32,8 +34,20 @@ function WriteScreenPage() {
   } = useForm<WriteData>({
     resolver: zodResolver(WriteSchema),
   });
+  const { user, profile } = useAuth();
 
-  const onHandleWrite = () => {};
+  const onHandleWrite = async (data: WriteData) => {
+    if (!profile) return;
+    console.log(profile);
+    const response = await CreatePost({
+      title: data.title,
+      description: data.descript,
+      imageUris: [],
+      profile,
+    });
+    if (response) router.replace("/");
+  };
+
   return (
     <>
       <SafeAreaView style={styles.safeArea}>
