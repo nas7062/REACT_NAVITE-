@@ -38,7 +38,7 @@ export default function PostDetailScreen() {
   const [content, setContent] = useState("");
   const scrollRef = useRef<ScrollView | null>(null);
   const { isKeyboardVisible } = useKeyboard();
-  const inset = useSafeAreaInsets();
+  const inset = useSafeAreaInsets(); // 밑에 공간 inset.bottom으로
   const inputRef = useRef<TextInput | null>(null);
   const [parentCommentId, setParentcommentId] = useState<number | null>(null);
 
@@ -71,6 +71,7 @@ export default function PostDetailScreen() {
     setContent("");
   };
 
+  // 변경 시 스크롤 아래로 comments 
   useEffect(() => {
     if (!scrollRef.current) return;
     if (!comments || comments.length === 0) return;

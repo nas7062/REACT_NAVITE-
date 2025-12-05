@@ -9,7 +9,6 @@ import { z } from "zod";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { router, useLocalSearchParams, useNavigation } from "expo-router";
 import { useAuth } from "@/context/AuthContext";
-import { useCreatePost } from "@/hooks/useCreatePost";
 import CustomButton from "@/components/CustomButton";
 import { useGetPostById } from "@/hooks/useGetPostById";
 import { useUpdatePost } from "@/hooks/useUpdatePost";
