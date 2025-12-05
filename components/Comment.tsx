@@ -1,7 +1,7 @@
 import { colors } from "@/constants";
 import { Comment as IComment } from "@/types";
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import Profile from "./Profile";
 import { useAuth } from "@/context/AuthContext";
 import Ionicons from "@expo/vector-icons/Ionicons";
@@ -13,12 +13,23 @@ interface CommentProps {
   comment: IComment;
   isReply?: boolean;
   postDocId: string;
+  parentCommentId?: number | null;
+  onRepple?: () => void;
+  onCancle?: () => void;
 }
 
-function Comment({ comment, isReply = false, postDocId }: CommentProps) {
+function Comment({
+  comment,
+  isReply = false,
+  postDocId,
+  parentCommentId,
+  onRepple,
+  onCancle,
+}: CommentProps) {
   const { user } = useAuth();
   const { showActionSheetWithOptions } = useActionSheet();
   const { mutate } = useDeleteComment(postDocId);
+
   const handlePressOption = () => {
     const options = ["삭제", "취소"];
     const destructiveButtonIndex = 0;
@@ -32,7 +43,10 @@ function Comment({ comment, isReply = false, postDocId }: CommentProps) {
       (selectedIndex?: number) => {
         switch (selectedIndex) {
           case destructiveButtonIndex:
-            mutate(comment.docId);
+            mutate({
+              commentDocId: comment.docId,
+              commentId: comment.id,
+            });
             break;
           case cancelButtonIndex: {
           }
@@ -69,6 +83,18 @@ function Comment({ comment, isReply = false, postDocId }: CommentProps) {
         />
       </View>
       <InputField editable={false} value={comment.content} />
+      {!isReply && (
+        <View style={styles.reppleButtonContainer}>
+          <Pressable onPress={onRepple}>
+            <Text style={styles.reppleButton}>답글 남기기</Text>
+          </Pressable>
+          {parentCommentId === comment.id && (
+            <Pressable onPress={onCancle}>
+              <Text style={styles.cancleButton}>취소</Text>
+            </Pressable>
+          )}
+        </View>
+      )}
     </View>
   );
 }
@@ -84,6 +110,21 @@ const styles = StyleSheet.create({
   profileContainer: {
     flexDirection: "row",
     alignItems: "center",
+  },
+  reppleButtonContainer: {
+    flexDirection: "row",
+    gap: 10,
+    alignItems: "center",
+  },
+  reppleButton: {
+    fontWeight: "bold",
+    color: colors.PRIMARY,
+    fontSize: 12,
+  },
+  cancleButton: {
+    fontWeight: "bold",
+    color: colors.BLACK,
+    fontSize: 12,
   },
 });
 

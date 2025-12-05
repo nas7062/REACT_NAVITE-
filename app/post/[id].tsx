@@ -6,18 +6,24 @@ import { useAuth } from "@/context/AuthContext";
 import { useCreateComment } from "@/hooks/useCreateComment";
 import { useGetComment } from "@/hooks/useGetComment";
 import { useGetPostById } from "@/hooks/useGetPostById";
+import useKeyboard from "@/hooks/usekeyboard";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import {
+  Keyboard,
   KeyboardAvoidingView,
+  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   View,
 } from "react-native";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { SafeAreaView } from "react-native-safe-area-context";
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
 
 export default function PostDetailScreen() {
   const { id } = useLocalSearchParams();
@@ -31,9 +37,32 @@ export default function PostDetailScreen() {
   const { profile } = useAuth();
   const [content, setContent] = useState("");
   const scrollRef = useRef<ScrollView | null>(null);
+  const { isKeyboardVisible } = useKeyboard();
+  const inset = useSafeAreaInsets();
+  const inputRef = useRef<TextInput | null>(null);
+  const [parentCommentId, setParentcommentId] = useState<number | null>(null);
 
+  const handleRepple = (commentId: number) => {
+    setParentcommentId(commentId);
+    inputRef.current?.focus();
+  };
+  const handleCancleRepple = () => {
+    setParentcommentId(null);
+    Keyboard.dismiss();
+  };
   const onSubmit = async () => {
     if (!content || !profile || !post) return;
+    if (parentCommentId) {
+      mutate({
+        content,
+        docId: post.docId,
+        profile,
+        parentId: parentCommentId,
+      });
+      setContent("");
+      handleCancleRepple();
+      return;
+    }
     mutate({
       content,
       docId: post.docId,
@@ -56,7 +85,9 @@ export default function PostDetailScreen() {
       <KeyboardAvoidingView
         style={styles.awareScrollView}
         behavior="height"
-        keyboardVerticalOffset={100}
+        keyboardVerticalOffset={
+          Platform.OS === "ios" || isKeyboardVisible ? 100 : inset.bottom
+        }
       >
         <ScrollView
           ref={scrollRef}
@@ -67,18 +98,32 @@ export default function PostDetailScreen() {
             <Text style={styles.commnetCount}>댓글{comments.length || 0}</Text>
           </View>
           {comments?.map((comment) => (
-            <Comment
-              comment={comment}
-              key={comment.id}
-              postDocId={post.docId}
-            />
+            <>
+              <Comment
+                comment={comment}
+                key={comment.id}
+                postDocId={post.docId}
+                parentCommentId={parentCommentId}
+                onRepple={() => handleRepple(comment.id)}
+                onCancle={handleCancleRepple}
+              />
+              {comment.replies.map((repple) => (
+                <Comment
+                  comment={repple}
+                  postDocId={post.docId}
+                  key={repple.id}
+                  isReply
+                />
+              ))}
+            </>
           ))}
         </ScrollView>
       </KeyboardAvoidingView>
       <View style={styles.commentInputContainer}>
         <InputField
+          ref={inputRef}
           value={content}
-          autoFocus
+          returnKeyType="send"
           onSubmitEditing={onSubmit}
           placeholder="댓글을 남겨보세요"
           onChangeText={(value) => setContent(value)}
@@ -113,7 +158,8 @@ const styles = StyleSheet.create({
   commentInputContainer: {
     position: "absolute",
     bottom: 0,
-    padding: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 20,
     backgroundColor: colors.WHITE,
     borderTopColor: colors.GRAY_200,
     borderTopWidth: StyleSheet.hairlineWidth,

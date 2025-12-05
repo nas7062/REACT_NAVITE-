@@ -6,11 +6,11 @@ import {
   doc,
   updateDoc,
   increment,
-  arrayUnion,
   query,
   orderBy,
   getDocs,
   deleteDoc,
+  where,
 } from "firebase/firestore";
 import { db } from "@/firebase";
 import { Comment, CreateCommentDto, User } from "@/types";
@@ -24,7 +24,6 @@ export async function CreateComment(body: CreateCommentDto): Promise<Comment> {
     throw new Error("로그인된 사용자가 없습니다.");
   }
 
-  // 1) 댓글 작성자 정보 구성
   const user: User = {
     id: currentUser.uid,
     displayName:
@@ -44,34 +43,21 @@ export async function CreateComment(body: CreateCommentDto): Promise<Comment> {
       createdAt: serverTimestamp(),
       user,
       isDeleted: false,
+      parentId: body.parentId ?? null,
     }
   );
 
-  // 3) serverTimestamp를 실제 값으로 받기 위해 다시 스냅샷 조회
   const snap = await getDoc(commentDocRef);
   const data = snap.data();
 
   const createdAtString =
     data?.createdAt?.toDate().toISOString() ?? new Date().toISOString();
 
-  // 4) Post 문서에 commentCount 증가 + comments 배열에 푸시 (선택)
   const postRef = doc(db, "posts", body.docId);
-
-  const commentForPostArray: Comment = {
-    docId: commentDocRef.id,
-    id: numberId,
-    content: body.content,
-    createdAt: createdAtString,
-    user,
-    isDeleted: false,
-  };
-
   await updateDoc(postRef, {
     commentCount: increment(1),
-    comments: arrayUnion(commentForPostArray),
   });
 
-  // 5) 호출 측에서 쓸 수 있도록 최종 Comment 객체 반환
   const newComment: Comment = {
     docId: commentDocRef.id,
     id: numberId,
@@ -79,6 +65,8 @@ export async function CreateComment(body: CreateCommentDto): Promise<Comment> {
     createdAt: createdAtString,
     user,
     isDeleted: false,
+    parentId: body.parentId ?? null,
+    replies: [],
   };
 
   return newComment;
@@ -88,35 +76,82 @@ export async function getComments(docId: string): Promise<Comment[]> {
   const commentsRef = collection(db, "posts", docId, "comments");
 
   const q = query(commentsRef, orderBy("createdAt", "asc"));
-  // orderBy("createdAt", "desc") 하면 최신순
-
   const snap = await getDocs(q);
 
-  const comments: Comment[] = snap.docs.map((doc) => {
-    const data = doc.data() as any;
+  // 1) 모두 flat하게 가져오기
+  const rawComments: Comment[] = snap.docs.map((d) => {
+    const data = d.data() as any;
 
     const createdAtString =
       data.createdAt?.toDate?.().toISOString() ?? new Date().toISOString();
 
     return {
-      docId: doc.id,
+      docId: d.id,
       id: data.id,
       content: data.content,
       createdAt: createdAtString,
       user: data.user,
       isDeleted: data.isDeleted ?? false,
+      parentId: data.parentId ?? null,
+      replies: [], // 일단 비워두고
     };
   });
 
-  return comments;
+  // 2) 부모/자식 묶기
+  const commentMap = new Map<number, Comment>();
+  const rootComments: Comment[] = [];
+
+  // 부모 댓글을 먼저 map에 넣고 root 목록 구성
+  rawComments.forEach((c) => {
+    if (!c.parentId) {
+      const clone = { ...c, replies: [] };
+      commentMap.set(c.id, clone);
+      rootComments.push(clone);
+    }
+  });
+
+  // parentId가 있는 것들은 부모의 replies에 넣기
+  rawComments.forEach((c) => {
+    if (c.parentId) {
+      const parent = commentMap.get(c.parentId);
+      if (parent) {
+        parent.replies.push({ ...c, replies: [] });
+      } else {
+        rootComments.push(c);
+      }
+    }
+  });
+
+  return rootComments;
 }
 
 export async function deleteComment({
   postDocId,
   commentDocId,
+  commentId, // Firestore 문서 id 말고, 우리가 만든 numberId(parentId 비교용)
 }: {
   postDocId: string;
-  commentDocId: string;
+  commentDocId: string; // Firestore 문서 id
+  commentId: number; // 댓글 id(Date.now) - parentId 매칭에 사용
 }): Promise<void> {
+  const commentsRef = collection(db, "posts", postDocId, "comments");
+
+  // 1) 이 부모 댓글을 parentId로 갖는 답글들 조회
+  const q = query(commentsRef, where("parentId", "==", commentId));
+  const snap = await getDocs(q);
+
+  // 2) 답글 전부 삭제
+  const repliesCount = snap.docs.length;
+  for (const d of snap.docs) {
+    await deleteDoc(doc(db, "posts", postDocId, "comments", d.id));
+  }
+
+  // 3) 부모 댓글 삭제
   await deleteDoc(doc(db, "posts", postDocId, "comments", commentDocId));
+
+  // 4) 댓글 개수 감소 (부모 1 + 답글 수)
+  const postRef = doc(db, "posts", postDocId);
+  await updateDoc(postRef, {
+    commentCount: increment(-(1 + repliesCount)),
+  });
 }

@@ -6,11 +6,13 @@ import "react-native-reanimated";
 import Toast from "react-native-toast-message";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ActionSheetProvider } from "@expo/react-native-action-sheet";
+import { useReactQueryDevTools } from "@dev-plugins/react-query";
 export const unstable_settings = {
   anchor: "(tabs)",
 };
 const queryClient = new QueryClient();
 export default function RootLayout() {
+  useReactQueryDevTools(queryClient);
   return (
     <>
       <ActionSheetProvider>

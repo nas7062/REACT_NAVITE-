@@ -1,5 +1,5 @@
 import { colors } from "@/constants";
-import React, { ReactNode } from "react";
+import React, { ReactNode, forwardRef } from "react";
 import {
   StyleSheet,
   Text,
@@ -14,32 +14,33 @@ interface InputFieldProps extends TextInputProps {
   rightChild?: ReactNode;
 }
 
-function InputField({
-  label,
-  variant = "filled",
-  rightChild = null,
-  ...props
-}: InputFieldProps) {
-  return (
-    <View>
-      {label && <Text style={styles.label}>{label}</Text>}
-      <View
-        style={[
-          styles.container,
-          styles[variant],
-          props.multiline && styles.multiline,
-        ]}
-      >
-        <TextInput
-          style={[styles.input, props.multiline && styles.multilineInput]}
-          {...props}
-          placeholderTextColor={colors.GRAY_500}
-        />
-        {rightChild}
+const InputField = forwardRef<TextInput, InputFieldProps>(
+  ({ label, variant = "filled", rightChild = null, ...props }, ref) => {
+    return (
+      <View>
+        {label && <Text style={styles.label}>{label}</Text>}
+        <View
+          style={[
+            styles.container,
+            styles[variant],
+            props.multiline && styles.multiline,
+          ]}
+        >
+          <TextInput
+            ref={ref}
+            style={[styles.input, props.multiline && styles.multilineInput]}
+            {...props}
+            placeholderTextColor={colors.GRAY_500}
+          />
+          {rightChild}
+        </View>
       </View>
-    </View>
-  );
-}
+    );
+  }
+);
+
+// forwardRef 쓸 때 displayName 붙여주는 게 좋음(디버깅용)
+InputField.displayName = "InputField";
 
 const styles = StyleSheet.create({
   container: {

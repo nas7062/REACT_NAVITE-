@@ -40,7 +40,7 @@ interface CreatePostDto {
 interface CreateCommentDto {
   docId: string;
   content: string;
-  ParentId?: string;
+  parentId?: number | null;
   profile: {
     displayName?: string;
     imageUri?: string;
@@ -66,9 +66,7 @@ interface Comment {
   createdAt: string;
   user: User;
   isDeleted: boolean;
-}
-
-interface PostComment extends Comment {
+  parentId?: number | null;
   replies: Comment[];
 }
 
@@ -87,7 +85,7 @@ interface Post {
   commentCount: number;
   viewCount: number;
   votes?: PostVote[];
-  comments?: PostComment[];
+  comments?: Comment[];
 }
 
 export type {
@@ -99,7 +97,6 @@ export type {
   CreateVoteDto,
   Post,
   User,
-  PostComment,
   Comment,
   ImageUri,
   VoteOption,
