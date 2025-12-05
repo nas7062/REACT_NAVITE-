@@ -1,12 +1,15 @@
-import { QueryClient, useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CreateComment } from "@/api/comment";
 
-export function useCreateComment() {
-  const queryclient = new QueryClient();
+export function useCreateComment(docId: string | undefined) {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: CreateComment,
     onSuccess: () => {
-      queryclient.invalidateQueries({ queryKey: ["comments"] });
+      queryClient.invalidateQueries({
+        queryKey: ["comments", docId],
+      });
     },
   });
 }

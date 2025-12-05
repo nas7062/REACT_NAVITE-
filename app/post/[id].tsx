@@ -15,7 +15,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 export default function PostDetailScreen() {
   const { id } = useLocalSearchParams();
   const { data: post, isPending, isError } = useGetPostById(id as string);
-  const { mutate } = useCreateComment();
+  const { mutate } = useCreateComment(post?.docId);
   const {
     data: comments,
     isPending: commentPending,
@@ -47,9 +47,11 @@ export default function PostDetailScreen() {
         <ScrollView contentContainerStyle={styles.scrollViewContainer}>
           <View style={{ marginTop: 12 }}>
             <Feed post={post} isDetail />
-            <Text style={styles.commnetCount}>댓글{post.commentCount}</Text>
+            <Text style={styles.commnetCount}>
+              댓글{post.commentCount || 0}
+            </Text>
           </View>
-          {post.comments?.map((comment) => (
+          {comments?.map((comment) => (
             <Comment
               comment={comment}
               key={comment.id}
@@ -91,6 +93,7 @@ const styles = StyleSheet.create({
   },
   scrollViewContainer: {
     backgroundColor: colors.GRAY_200,
+    paddingBottom: 72,
   },
   commentInputContainer: {
     position: "absolute",

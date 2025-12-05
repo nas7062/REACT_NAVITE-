@@ -1,9 +1,9 @@
-import { QueryClient, useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CreatePost } from "@/api/post";
 import { router } from "expo-router";
 
 export function useCreatePost() {
-  const queryclient = new QueryClient();
+  const queryclient = useQueryClient();
   return useMutation({
     mutationFn: CreatePost,
     onSuccess: () => {
