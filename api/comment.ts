@@ -35,6 +35,7 @@ export async function CreateComment(body: CreateCommentDto): Promise<Comment> {
 
   const numberId = Date.now();
 
+  // docId를 가진 posts의 coomnets 추가
   const commentDocRef = await addDoc(
     collection(db, "posts", body.docId, "comments"),
     {
@@ -75,10 +76,11 @@ export async function CreateComment(body: CreateCommentDto): Promise<Comment> {
 export async function getComments(docId: string): Promise<Comment[]> {
   const commentsRef = collection(db, "posts", docId, "comments");
 
+  //오래된 순으로 댓글이 아래로
   const q = query(commentsRef, orderBy("createdAt", "asc"));
   const snap = await getDocs(q);
 
-  // 1) 모두 flat하게 가져오기
+  // comments 모두 가져오기
   const rawComments: Comment[] = snap.docs.map((d) => {
     const data = d.data() as any;
 
@@ -93,7 +95,7 @@ export async function getComments(docId: string): Promise<Comment[]> {
       user: data.user,
       isDeleted: data.isDeleted ?? false,
       parentId: data.parentId ?? null,
-      replies: [], // 일단 비워두고
+      replies: [], // 대댓글
     };
   });
 
@@ -102,10 +104,10 @@ export async function getComments(docId: string): Promise<Comment[]> {
   const rootComments: Comment[] = [];
 
   // 부모 댓글을 먼저 map에 넣고 root 목록 구성
-  rawComments.forEach((c) => {
-    if (!c.parentId) {
-      const clone = { ...c, replies: [] };
-      commentMap.set(c.id, clone);
+  rawComments.forEach((comment) => {
+    if (!comment.parentId) {
+      const clone = { ...comment, replies: [] };
+      commentMap.set(comment.id, clone);
       rootComments.push(clone);
     }
   });
@@ -128,28 +130,28 @@ export async function getComments(docId: string): Promise<Comment[]> {
 export async function deleteComment({
   postDocId,
   commentDocId,
-  commentId, // Firestore 문서 id 말고, 우리가 만든 numberId(parentId 비교용)
+  commentId, 
 }: {
   postDocId: string;
-  commentDocId: string; // Firestore 문서 id
-  commentId: number; // 댓글 id(Date.now) - parentId 매칭에 사용
+  commentDocId: string; 
+  commentId: number; 
 }): Promise<void> {
   const commentsRef = collection(db, "posts", postDocId, "comments");
 
-  // 1) 이 부모 댓글을 parentId로 갖는 답글들 조회
+  // 부모 댓글 조회.
   const q = query(commentsRef, where("parentId", "==", commentId));
   const snap = await getDocs(q);
 
-  // 2) 답글 전부 삭제
+  //답글 전부 삭제
   const repliesCount = snap.docs.length;
   for (const d of snap.docs) {
     await deleteDoc(doc(db, "posts", postDocId, "comments", d.id));
   }
 
-  // 3) 부모 댓글 삭제
+  //부모 댓글 삭제
   await deleteDoc(doc(db, "posts", postDocId, "comments", commentDocId));
 
-  // 4) 댓글 개수 감소 (부모 1 + 답글 수)
+  // 부모 + 댓글 댓글 개수 감소 
   const postRef = doc(db, "posts", postDocId);
   await updateDoc(postRef, {
     commentCount: increment(-(1 + repliesCount)),
