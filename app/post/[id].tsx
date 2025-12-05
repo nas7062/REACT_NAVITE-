@@ -1,8 +1,12 @@
 import Feed from "@/components/Feed";
 import InputField from "@/components/InputField";
 import { colors } from "@/constants";
+import { useAuth } from "@/context/AuthContext";
+import { useCreateComment } from "@/hooks/useCreateComment";
+import { useGetComment } from "@/hooks/useGetComment";
 import { useGetPostById } from "@/hooks/useGetPostById";
 import { useLocalSearchParams } from "expo-router";
+import { useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -10,9 +14,32 @@ import { SafeAreaView } from "react-native-safe-area-context";
 export default function PostDetailScreen() {
   const { id } = useLocalSearchParams();
   const { data: post, isPending, isError } = useGetPostById(id as string);
+  const { mutate } = useCreateComment();
+  const {
+    data: comments,
+    isPending: commentPending,
+    isError: commentError,
+  } = useGetComment(id as string);
+  const { profile } = useAuth();
+  const [content, setContent] = useState("");
+  if (isPending || commentPending) return "loading...";
+  if (!post || isError || commentError) return;
 
-  if (isPending) return "loading...";
-  if (!post || isError) return;
+  const onSubmit = async () => {
+    if (!content || !profile) return;
+    mutate(
+      {
+        content,
+        docId: post.docId,
+        profile,
+      },
+      {
+        onSuccess: () => {
+          setContent("");
+        },
+      }
+    );
+  };
   return (
     <SafeAreaView style={styles.container}>
       <KeyboardAwareScrollView style={styles.awareScrollView}>
@@ -22,16 +49,21 @@ export default function PostDetailScreen() {
             <Text style={styles.commnetCount}>댓글{post.commentCount}</Text>
           </View>
         </ScrollView>
-        <View style={styles.commentInputContainer}>
-          <InputField
-            rightChild={
-              <Pressable style={styles.inputButtonContainer}>
-                <Text style={styles.inputButtonText}>등록</Text>
-              </Pressable>
-            }
-          />
-        </View>
       </KeyboardAwareScrollView>
+      <View style={styles.commentInputContainer}>
+        <InputField
+          value={content}
+          autoFocus
+          onSubmitEditing={onSubmit}
+          placeholder="댓글을 남겨보세요"
+          onChangeText={(value) => setContent(value)}
+          rightChild={
+            <Pressable style={styles.inputButtonContainer} onPress={onSubmit}>
+              <Text style={styles.inputButtonText}>등록</Text>
+            </Pressable>
+          }
+        />
+      </View>
     </SafeAreaView>
   );
 }
@@ -67,8 +99,8 @@ const styles = StyleSheet.create({
   },
   inputButtonContainer: {
     backgroundColor: colors.PRIMARY,
-    padding: 8,
-    borderRadius: 6,
+    padding: 6,
+    borderRadius: 8,
   },
   inputButtonText: {
     color: colors.WHITE,

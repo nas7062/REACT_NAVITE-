@@ -38,7 +38,9 @@ function Feed({ post, isDetail = false }: FeedProps) {
       (selectedIndex?: number) => {
         switch (selectedIndex) {
           case destructiveButtonIndex:
-            deletePost(post.docId);
+            deletePost(post.docId, {
+              onSuccess: () => isDetail && router.back(),
+            });
             break;
           case 1: // 수정
             router.push({

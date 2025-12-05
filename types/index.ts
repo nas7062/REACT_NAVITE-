@@ -38,9 +38,12 @@ interface CreatePostDto {
 }
 
 interface CreateCommentDto {
+  docId: string;
   content: string;
-  postId: number;
-  parentCommentId?: number;
+  profile: {
+    displayName?: string;
+    imageUri?: string;
+  };
 }
 
 interface CreateVoteDto {
