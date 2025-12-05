@@ -51,13 +51,13 @@ function WriteScreenPage() {
       headerRight: () => (
         <CustomButton
           label="저장"
-          size="medium"
+          size="small"
           variant="standard"
           onPress={handleSubmit(onHandleWrite)}
         />
       ),
     });
-  }, [handleSubmit, navigation]);
+  }, [handleSubmit, navigation, onHandleWrite]);
   return (
     <>
       <SafeAreaView style={styles.safeArea}>

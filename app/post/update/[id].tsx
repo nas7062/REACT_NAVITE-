@@ -76,7 +76,7 @@ function PostUpdateScreen() {
       headerRight: () => (
         <CustomButton
           label="수정"
-          size="medium"
+          size="small"
           variant="standard"
           onPress={handleSubmit(onHandleWrite)}
         />

@@ -4,7 +4,7 @@ import { Pressable, PressableProps, StyleSheet, Text } from "react-native";
 
 interface CustomButtonProps extends PressableProps {
   label: string;
-  size?: "medium" | "large";
+  size?: "medium" | "large" | "small";
   variant?: "filled" | "standard";
 }
 
@@ -42,6 +42,10 @@ const styles = StyleSheet.create({
   medium: {
     width: "66%",
     height: 30,
+  },
+  small: {
+    width: 40,
+    height: 20,
   },
   filledContainer: {
     backgroundColor: colors.ORANGE_600,

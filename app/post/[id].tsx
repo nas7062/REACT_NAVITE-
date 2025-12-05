@@ -1,4 +1,3 @@
-import AuthRoute from "@/components/AuthRoute";
 import Feed from "@/components/Feed";
 import InputField from "@/components/InputField";
 import { colors } from "@/constants";
@@ -15,27 +14,25 @@ export default function PostDetailScreen() {
   if (isPending) return "loading...";
   if (!post || isError) return;
   return (
-    <AuthRoute>
-      <SafeAreaView style={styles.container}>
-        <KeyboardAwareScrollView style={styles.awareScrollView}>
-          <ScrollView contentContainerStyle={styles.scrollViewContainer}>
-            <View style={{ marginTop: 12 }}>
-              <Feed post={post} isDetail />
-              <Text style={styles.commnetCount}>댓글{post.commentCount}</Text>
-            </View>
-          </ScrollView>
-          <View style={styles.commentInputContainer}>
-            <InputField
-              rightChild={
-                <Pressable style={styles.inputButtonContainer}>
-                  <Text style={styles.inputButtonText}>등록</Text>
-                </Pressable>
-              }
-            />
+    <SafeAreaView style={styles.container}>
+      <KeyboardAwareScrollView style={styles.awareScrollView}>
+        <ScrollView contentContainerStyle={styles.scrollViewContainer}>
+          <View style={{ marginTop: 12 }}>
+            <Feed post={post} isDetail />
+            <Text style={styles.commnetCount}>댓글{post.commentCount}</Text>
           </View>
-        </KeyboardAwareScrollView>
-      </SafeAreaView>
-    </AuthRoute>
+        </ScrollView>
+        <View style={styles.commentInputContainer}>
+          <InputField
+            rightChild={
+              <Pressable style={styles.inputButtonContainer}>
+                <Text style={styles.inputButtonText}>등록</Text>
+              </Pressable>
+            }
+          />
+        </View>
+      </KeyboardAwareScrollView>
+    </SafeAreaView>
   );
 }
 
