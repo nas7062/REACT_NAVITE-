@@ -51,9 +51,9 @@ function Comment({ comment, isReply = false, postDocId }: CommentProps) {
           />
         )}
         <Profile
-          imageUri={comment.isDeleted ? "" : comment.user.imageUri}
+          imageUri={comment.user.imageUri}
           createdAt={comment.createdAt}
-          nickname={comment.isDeleted ? "" : comment.user.displayName}
+          nickname={comment.user.displayName}
           onPress={() => {}}
           option={
             user?.uid === comment.user.id &&
@@ -68,10 +68,7 @@ function Comment({ comment, isReply = false, postDocId }: CommentProps) {
           }
         />
       </View>
-      <InputField
-        editable={false}
-        value={comment.isDeleted ? "삭제된 댓글" : comment.content}
-      />
+      <InputField editable={false} value={comment.content} />
     </View>
   );
 }

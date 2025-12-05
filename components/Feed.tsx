@@ -12,6 +12,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { useActionSheet } from "@expo/react-native-action-sheet";
 import { useDeletePost } from "@/hooks/useDeletePost";
 import { router } from "expo-router";
+import { useGetComment } from "@/hooks/useGetComment";
 dayjs.extend(relativeTime);
 dayjs.locale("ko");
 interface FeedProps {
@@ -26,7 +27,11 @@ function Feed({ post, isDetail = false }: FeedProps) {
   const isLiked = likeUsers.includes(user?.uid as string);
   const { showActionSheetWithOptions } = useActionSheet();
   const { mutate: deletePost } = useDeletePost();
-
+  const {
+    data: comments,
+    isPending: commentPending,
+    isError: commentError,
+  } = useGetComment(post.docId);
   const cancelButtonIndex = 2;
   const destructiveButtonIndex = 0;
 
@@ -66,6 +71,8 @@ function Feed({ post, isDetail = false }: FeedProps) {
 
   const ContainerComponent = isDetail ? View : Pressable;
 
+  if (commentPending) return "loading...";
+  if (commentError || !comments) return;
   return (
     <ContainerComponent style={styles.container} onPress={handlePressFeed}>
       <View style={styles.contentContainer}>
@@ -91,7 +98,7 @@ function Feed({ post, isDetail = false }: FeedProps) {
         </Text>
         <View style={styles.subContainer}>
           <Text style={styles.sub}>조회 {post.viewCount}</Text>
-          <Text style={styles.comments}>댓글 {post.commentCount}</Text>
+          <Text style={styles.comments}>댓글 {comments.length}</Text>
           <Text style={styles.sub}>찜 {post.likes.length}</Text>
         </View>
       </View>
