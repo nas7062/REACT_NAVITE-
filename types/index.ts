@@ -40,6 +40,7 @@ interface CreatePostDto {
 interface CreateCommentDto {
   docId: string;
   content: string;
+  ParentId?: string;
   profile: {
     displayName?: string;
     imageUri?: string;
@@ -59,6 +60,7 @@ interface PostVote {
   options: PostVoteOption[];
 }
 interface Comment {
+  docId: string;
   id: number;
   content: string;
   createdAt: string;

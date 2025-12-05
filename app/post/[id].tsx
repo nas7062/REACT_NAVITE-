@@ -1,3 +1,4 @@
+import Comment from "@/components/Comment";
 import Feed from "@/components/Feed";
 import InputField from "@/components/InputField";
 import { colors } from "@/constants";
@@ -48,6 +49,13 @@ export default function PostDetailScreen() {
             <Feed post={post} isDetail />
             <Text style={styles.commnetCount}>댓글{post.commentCount}</Text>
           </View>
+          {post.comments?.map((comment) => (
+            <Comment
+              comment={comment}
+              key={comment.id}
+              postDocId={post.docId}
+            />
+          ))}
         </ScrollView>
       </KeyboardAwareScrollView>
       <View style={styles.commentInputContainer}>

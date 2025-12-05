@@ -10,18 +10,11 @@ import {
   query,
   orderBy,
   getDocs,
+  deleteDoc,
 } from "firebase/firestore";
 import { db } from "@/firebase";
-import { CreateCommentDto, User } from "@/types";
-
+import { Comment, CreateCommentDto, User } from "@/types";
 import { getAuth } from "firebase/auth";
-interface Comment {
-  id: number;
-  content: string;
-  createdAt: string;
-  user: User;
-  isDeleted: boolean;
-}
 
 export async function CreateComment(body: CreateCommentDto): Promise<Comment> {
   const auth = getAuth();
@@ -65,6 +58,7 @@ export async function CreateComment(body: CreateCommentDto): Promise<Comment> {
   const postRef = doc(db, "posts", body.docId);
 
   const commentForPostArray: Comment = {
+    docId: commentDocRef.id,
     id: numberId,
     content: body.content,
     createdAt: createdAtString,
@@ -79,6 +73,7 @@ export async function CreateComment(body: CreateCommentDto): Promise<Comment> {
 
   // 5) 호출 측에서 쓸 수 있도록 최종 Comment 객체 반환
   const newComment: Comment = {
+    docId: commentDocRef.id,
     id: numberId,
     content: body.content,
     createdAt: createdAtString,
@@ -104,6 +99,7 @@ export async function getComments(docId: string): Promise<Comment[]> {
       data.createdAt?.toDate?.().toISOString() ?? new Date().toISOString();
 
     return {
+      docId: doc.id,
       id: data.id,
       content: data.content,
       createdAt: createdAtString,
@@ -113,4 +109,14 @@ export async function getComments(docId: string): Promise<Comment[]> {
   });
 
   return comments;
+}
+
+export async function deleteComment({
+  postDocId,
+  commentDocId,
+}: {
+  postDocId: string;
+  commentDocId: string;
+}): Promise<void> {
+  await deleteDoc(doc(db, "posts", postDocId, "comments", commentDocId));
 }
