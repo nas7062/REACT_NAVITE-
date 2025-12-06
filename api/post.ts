@@ -261,16 +261,20 @@ export async function updatePost({
 }
 
 
-export async function toggleLike ({docId,userId,isLiked}:{docId:string,userId:string,isLiked:boolean} )  {
+export async function toggleLike (docId:string,userId:string )  {
   const postRef = doc(db,"posts",docId);
-  if(isLiked) {
-    await updateDoc(postRef,{
-      likes:arrayRemove(userId)
-    });
+ 
+  const toggle =  async (isLiked:boolean) => {
+    if(isLiked) {
+      await updateDoc(postRef,{
+        likes:arrayRemove(userId)
+      });
+    }
+    else {
+      await updateDoc(postRef,{
+        likes:arrayUnion(userId)
+      })
+    }
   }
-  else {
-    await updateDoc(postRef,{
-      likes:arrayUnion(userId)
-    })
-  }
+  return {toggle}
 }

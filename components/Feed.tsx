@@ -2,6 +2,7 @@ import { colors } from "@/constants";
 import { useAuth } from "@/context/AuthContext";
 import { useDeletePost } from "@/hooks/useDeletePost";
 import { useGetComment } from "@/hooks/useGetComment";
+import { useToggleLike } from "@/hooks/useToggleLike";
 import { Post } from "@/types";
 import { useActionSheet } from "@expo/react-native-action-sheet";
 import Ionicons from "@expo/vector-icons/Ionicons";
@@ -26,6 +27,8 @@ function Feed({ post, isDetail = false }: FeedProps) {
   const isLiked = post.likes.includes(user?.uid as string);
   const { showActionSheetWithOptions } = useActionSheet();
   const { mutate: deletePost } = useDeletePost();
+  const { mutate: toggleLike } = useToggleLike(post.docId, user?.uid as string);
+  console.log(post.likes, isLiked);
   const {
     data: comments,
     isPending: commentPending,
@@ -33,6 +36,10 @@ function Feed({ post, isDetail = false }: FeedProps) {
   } = useGetComment(post.docId);
   const cancelButtonIndex = 2;
   const destructiveButtonIndex = 0;
+
+  const onToggle = () => {
+    toggleLike(isLiked);
+  };
 
   const handlePressOption = () => {
     const options = ["삭제", "수정", "취소"];
@@ -106,7 +113,7 @@ function Feed({ post, isDetail = false }: FeedProps) {
           source={require("@/assets/images/rabbit.png")}
           style={styles.image}
         />
-        <Pressable style={styles.likeButton}>
+        <Pressable style={styles.likeButton} onPress={onToggle}>
           <Octicons
             name={isLiked ? "heart-fill" : "heart"}
             size={24}
