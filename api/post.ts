@@ -1,20 +1,22 @@
-import {
-  addDoc,
-  collection,
-  serverTimestamp,
-  getDoc,
-  query,
-  orderBy,
-  limit,
-  doc,
-  startAfter,
-  getDocs,
-  deleteDoc,
-  updateDoc,
-} from "firebase/firestore";
 import { db } from "@/firebase";
 import { CreatePostDto, Post, User } from "@/types/index";
 import { getAuth } from "firebase/auth";
+import {
+  addDoc,
+  arrayRemove,
+  arrayUnion,
+  collection,
+  deleteDoc,
+  doc,
+  getDoc,
+  getDocs,
+  limit,
+  orderBy,
+  query,
+  serverTimestamp,
+  startAfter,
+  updateDoc,
+} from "firebase/firestore";
 
 export async function CreatePost(body: CreatePostDto): Promise<Post> {
   const auth = getAuth(); // 유저 정보 가져오기
@@ -256,4 +258,19 @@ export async function updatePost({
   };
 
   return post;
+}
+
+
+export async function toggleLike ({docId,userId,isLiked}:{docId:string,userId:string,isLiked:boolean} )  {
+  const postRef = doc(db,"posts",docId);
+  if(isLiked) {
+    await updateDoc(postRef,{
+      likes:arrayRemove(userId)
+    });
+  }
+  else {
+    await updateDoc(postRef,{
+      likes:arrayUnion(userId)
+    })
+  }
 }

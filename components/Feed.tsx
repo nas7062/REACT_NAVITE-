@@ -1,18 +1,18 @@
 import { colors } from "@/constants";
+import { useAuth } from "@/context/AuthContext";
+import { useDeletePost } from "@/hooks/useDeletePost";
+import { useGetComment } from "@/hooks/useGetComment";
 import { Post } from "@/types";
+import { useActionSheet } from "@expo/react-native-action-sheet";
+import Ionicons from "@expo/vector-icons/Ionicons";
 import Octicons from "@expo/vector-icons/Octicons";
+import dayjs from "dayjs";
+import "dayjs/locale/ko";
+import relativeTime from "dayjs/plugin/relativeTime";
+import { router } from "expo-router";
 import React from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import Profile from "./Profile";
-import { useAuth } from "@/context/AuthContext";
-import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
-import "dayjs/locale/ko";
-import Ionicons from "@expo/vector-icons/Ionicons";
-import { useActionSheet } from "@expo/react-native-action-sheet";
-import { useDeletePost } from "@/hooks/useDeletePost";
-import { router } from "expo-router";
-import { useGetComment } from "@/hooks/useGetComment";
 dayjs.extend(relativeTime);
 dayjs.locale("ko");
 interface FeedProps {
@@ -23,8 +23,7 @@ interface FeedProps {
 function Feed({ post, isDetail = false }: FeedProps) {
   const { user } = useAuth();
 
-  const likeUsers = post.likes?.map((like) => like);
-  const isLiked = likeUsers.includes(user?.uid as string);
+  const isLiked = post.likes.includes(user?.uid as string);
   const { showActionSheetWithOptions } = useActionSheet();
   const { mutate: deletePost } = useDeletePost();
   const {
