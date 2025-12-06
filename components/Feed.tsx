@@ -28,14 +28,12 @@ function Feed({ post, isDetail = false }: FeedProps) {
   const { showActionSheetWithOptions } = useActionSheet();
   const { mutate: deletePost } = useDeletePost();
   const { mutate: toggleLike } = useToggleLike(post.docId, user?.uid as string);
-  console.log(post.likes, isLiked);
+
   const {
     data: comments,
     isPending: commentPending,
     isError: commentError,
   } = useGetComment(post.docId);
-  const cancelButtonIndex = 2;
-  const destructiveButtonIndex = 0;
 
   const onToggle = () => {
     toggleLike(isLiked);
@@ -43,7 +41,8 @@ function Feed({ post, isDetail = false }: FeedProps) {
 
   const handlePressOption = () => {
     const options = ["삭제", "수정", "취소"];
-
+    const cancelButtonIndex = 2;
+    const destructiveButtonIndex = 0;
     showActionSheetWithOptions(
       { options, cancelButtonIndex, destructiveButtonIndex },
       (selectedIndex?: number) => {
