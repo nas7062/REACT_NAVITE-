@@ -10,7 +10,6 @@ import { auth, db } from "@/firebase";
 import { doc, getDoc } from "firebase/firestore";
 import { SESSION_TIMEOUT_MS } from "@/constants";
 import { UserProfile } from "@/types";
-//import usePushNotification from "@/hooks/usePushNotification";
 
 type AuthContextValue = {
   user: User | null;
@@ -25,7 +24,7 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [justSignedIn, setJustSignedIn] = useState(false);
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {

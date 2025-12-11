@@ -20,7 +20,8 @@ function LikeFeedList() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const topRef = useRef<FlatList | null>(null);
 
-  useScrollToTop(topRef);
+  // Temporarily disabled to test if this causes the crash
+  // useScrollToTop(topRef);
 
   const handleRefresh = async () => {
     setIsRefreshing(true);

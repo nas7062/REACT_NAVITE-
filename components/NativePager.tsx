@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { View, StyleSheet } from "react-native";
 import LikeFeedList from "./LikeFeedList";
 import MyFeedList from "./MyFeedList";
@@ -8,9 +8,13 @@ type NativePagerProps = {
 };
 
 export default function NativePager({ currentTab }: NativePagerProps) {
+  const content = useMemo(() => {
+    return currentTab === 0 ? <MyFeedList key="my" /> : <LikeFeedList key="like" />;
+  }, [currentTab]);
+
   return (
     <View style={styles.container}>
-      {currentTab === 0 ? <MyFeedList key="my" /> : <LikeFeedList key="like" />}
+      {content}
     </View>
   );
 }

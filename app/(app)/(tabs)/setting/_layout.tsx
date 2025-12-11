@@ -5,16 +5,13 @@ export default function SettingLayout() {
     <Stack
       screenOptions={{
         headerShown: false,
-        contentStyle: {
-          backgroundColor: "white",
-        },
       }}
     >
       <Stack.Screen
         name="index"
         options={{
           title: "설정",
-          headerShown: true,
+          headerShown: false,
           headerTitleAlign: "center",
         }}
       />

@@ -1,4 +1,4 @@
-import AuthRoute from "@/components/AuthRoute";
+import RequireAuthScreen from "@/components/AuthRoute";
 import { colors } from "@/constants";
 import { useAuth } from "@/context/AuthContext";
 import { auth } from "@/firebase";
@@ -47,7 +47,7 @@ export default function MyInfoScreen() {
     : 0;
 
   return (
-    <AuthRoute>
+    <RequireAuthScreen>
       <SafeAreaView style={styles.container}>
         <View style={styles.imgContainer}>
           <Image
@@ -103,7 +103,7 @@ export default function MyInfoScreen() {
           </Pressable>
         </View>
       </SafeAreaView>
-    </AuthRoute>
+    </RequireAuthScreen>
   );
 }
 

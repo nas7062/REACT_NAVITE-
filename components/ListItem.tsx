@@ -1,5 +1,7 @@
+// components/ListItem.tsx
 import { colors } from "@/constants";
-import React, { ReactNode } from "react";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import React from "react";
 import {
   Pressable,
   PressableProps,
@@ -10,16 +12,23 @@ import {
 
 interface ListItemProps extends PressableProps {
   title: string;
-  icon?: ReactNode;
+  iconName?: keyof typeof Ionicons.glyphMap;
 }
 
-function ListItem({ title, icon, ...props }: ListItemProps) {
+function ListItem({ title, iconName, ...props }: ListItemProps) {
   return (
     <Pressable
-      style={({ pressed }) => [styles.container, styles.pressedContainer]}
       {...props}
+      style={({ pressed }) => [
+        styles.container,
+        pressed && styles.pressedContainer,
+      ]}
     >
-      {icon}
+      {iconName && (
+        <View style={styles.icon}>
+          <Ionicons name={iconName} size={20} />
+        </View>
+      )}
       <View style={styles.titleContainer}>
         <Text style={styles.titleText}>{title}</Text>
       </View>
@@ -50,6 +59,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     color: colors.BLACK,
+  },
+  icon: {
+    marginRight: 2,
   },
 });
 

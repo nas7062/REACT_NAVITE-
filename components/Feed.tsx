@@ -15,6 +15,7 @@ import React from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import Profile from "./Profile";
 import ImagePreviewList from "./ImagePreviewList";
+import { SafeAreaView } from "react-native-safe-area-context";
 dayjs.extend(relativeTime);
 dayjs.locale("ko");
 interface FeedProps {
@@ -76,7 +77,7 @@ function Feed({ post, isDetail = false }: FeedProps) {
   };
 
   const FeedContent = () => (
-    <View>
+    <>
       <View style={styles.contentContainer}>
         <Profile
           imageUri={post.author.imageUri}
@@ -120,7 +121,7 @@ function Feed({ post, isDetail = false }: FeedProps) {
           />
         </Pressable>
       </View>
-    </View>
+    </>
   );
 
   if (commentPending) {
@@ -140,9 +141,9 @@ function Feed({ post, isDetail = false }: FeedProps) {
   }
 
   return isDetail ? (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <FeedContent />
-    </View>
+    </SafeAreaView>
   ) : (
     <Pressable style={styles.container} onPress={handlePressFeed}>
       <FeedContent />
@@ -155,7 +156,8 @@ const styles = StyleSheet.create({
     backgroundColor: colors.WHITE,
     flexDirection: "row",
     padding: 8,
-    height: 160,
+    height: 180,
+    width: "100%",
     gap: 10,
   },
 

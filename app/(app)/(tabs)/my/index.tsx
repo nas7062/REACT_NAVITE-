@@ -1,4 +1,4 @@
-import AuthRoute from "@/components/AuthRoute";
+import RequireAuthScreen from "@/components/AuthRoute";
 import CustomButton from "@/components/CustomButton";
 import NativePager from "@/components/NativePager";
 import Tab from "@/components/Tab";
@@ -20,8 +20,8 @@ export default function MyScreen() {
   };
 
   return (
-    <AuthRoute>
-      <SafeAreaView style={styles.container}>
+    <RequireAuthScreen>
+      <SafeAreaView style={styles.container} edges={["top", "bottom"]}>
         <View style={styles.imgContainer}>
           <Image
             style={styles.profileImg}
@@ -53,18 +53,18 @@ export default function MyScreen() {
             isActive={currentTab === 0}
             label="내 게시물"
             onPress={() => handlePressTab(0)}
-          ></Tab>
+          />
           <Tab
             isActive={currentTab === 1}
             label="좋아요 한 게시물"
             onPress={() => handlePressTab(1)}
-          ></Tab>
+          />
         </View>
         <View style={styles.contentContainer}>
           <NativePager currentTab={currentTab} />
         </View>
       </SafeAreaView>
-    </AuthRoute>
+    </RequireAuthScreen>
   );
 }
 

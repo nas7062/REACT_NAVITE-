@@ -1,94 +1,50 @@
-import { useEffect, useRef, useState } from "react";
-import * as Device from "expo-device";
-import * as Notifications from "expo-notifications";
-import Constants from "expo-constants";
-import { Platform } from "react-native";
+// // hooks/usePushNotification.ts
+// import { useEffect, useState } from "react";
+// import { Platform } from "react-native";
+// import * as Notifications from "expo-notifications";
 
-function usePushNotification() {
-  const [expoPushToken, setExpoPushToken] = useState("");
-  const [notification, setNotification] = useState<
-    Notifications.Notification | undefined
-  >(undefined);
+// type PushResult = {
+//   expoPushToken: string | null;
+// };
 
-  // 타입도 Subscription | null 로 맞춰주는 게 좋습니다.
-  const notificationListener = useRef<Notifications.Subscription | null>(null);
-  const responseListener = useRef<Notifications.Subscription | null>(null);
+// export default function usePushNotification(): PushResult {
+//   const [expoPushToken, setExpoPushToken] = useState<string | null>(null);
 
-  const handleRegistrationError = (errorMessage: string) => {
-    alert(errorMessage);
-    throw new Error(errorMessage);
-  };
+//   useEffect(() => {
+//     // 1) 웹이면 아무 것도 하지 않음 → vapidPublicKey 에러 방지
+//     if (Platform.OS === "web") {
+//       console.log("[usePushNotification] skip on web");
+//       return;
+//     }
 
-  const registerForPushNotificationsAsync = async () => {
-    if (Platform.OS === "android") {
-      Notifications.setNotificationChannelAsync("default", {
-        name: "default",
-        importance: Notifications.AndroidImportance.MAX,
-        vibrationPattern: [0, 250, 250, 250],
-        lightColor: "#FF231F7C",
-      });
-    }
+//     // 2) 모바일(ios/안드)에서만 토큰 요청
+//     async function registerForPushNotificationsAsync() {
+//       try {
+//         const { status: existingStatus } =
+//           await Notifications.getPermissionsAsync();
+//         let finalStatus = existingStatus;
 
-    if (Device.isDevice) {
-      const { status: existingStatus } =
-        await Notifications.getPermissionsAsync();
-      let finalStatus = existingStatus;
+//         if (existingStatus !== "granted") {
+//           const { status } = await Notifications.requestPermissionsAsync();
+//           finalStatus = status;
+//         }
 
-      if (existingStatus !== "granted") {
-        const { status } = await Notifications.requestPermissionsAsync();
-        finalStatus = status;
-      }
+//         if (finalStatus !== "granted") {
+//           console.log("푸시 권한 거부됨");
+//           return;
+//         }
 
-      if (finalStatus !== "granted") {
-        handleRegistrationError("푸시 권한을 허용해주세요.");
-        return;
-      }
+//         const tokenData = await Notifications.getExpoPushTokenAsync();
+//         const token = tokenData.data;
+//         console.log("[usePushNotification] expo push token:", token);
+//         setExpoPushToken(token);
+//       } catch (e) {
+//         console.log("[usePushNotification] error:", e);
+//       }
+//     }
 
-      const projectId =
-        Constants?.expoConfig?.extra?.eas?.projectId ??
-        Constants?.easConfig?.projectId;
-      if (!projectId) {
-        handleRegistrationError("Project ID를 찾을 수 없습니다.");
-      }
+//     registerForPushNotificationsAsync();
+//   }, []);
 
-      try {
-        const pushTokenString = (
-          await Notifications.getExpoPushTokenAsync({
-            projectId,
-          })
-        ).data;
-        return pushTokenString;
-      } catch (e: unknown) {
-        handleRegistrationError(`${e}`);
-      }
-    } else {
-      handleRegistrationError("실제 기기를 이용해주세요.");
-    }
-  };
-
-  useEffect(() => {
-    registerForPushNotificationsAsync()
-      .then((token) => setExpoPushToken(token ?? ""))
-      .catch((error: any) => console.log("error", error));
-
-    notificationListener.current =
-      Notifications.addNotificationReceivedListener((notification) => {
-        setNotification(notification);
-      });
-
-    responseListener.current =
-      Notifications.addNotificationResponseReceivedListener((response) => {
-        console.log(response);
-      });
-
-    return () => {
-      // ⬇⬇ 여기만 이렇게 변경
-      notificationListener.current?.remove();
-      responseListener.current?.remove();
-    };
-  }, [registerForPushNotificationsAsync]);
-
-  return { expoPushToken, notification };
-}
-
-export default usePushNotification;
+//   return { expoPushToken };
+// }
