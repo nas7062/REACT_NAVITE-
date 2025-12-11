@@ -26,7 +26,7 @@ function PostWriteFooter({ onChangeImages }: Props) {
     onChangeImages(images);
   };
   return (
-    <View style={[styles.container, { paddingBottom: inset.bottom }]}>
+    <View style={[styles.container, { paddingBottom: inset.bottom || 10 }]}>
       <Pressable style={styles.footerIcon} onPress={handleOpenImagePicker}>
         <Ionicons name="camera" size={20} color={colors.BLACK} />
       </Pressable>
@@ -37,7 +37,8 @@ function PostWriteFooter({ onChangeImages }: Props) {
 const styles = StyleSheet.create({
   container: {
     width: "100%",
-    paddingTop: 12,
+    height: 60,
+    paddingVertical: 10,
     bottom: 12,
     paddingHorizontal: 16,
     backgroundColor: colors.WHITE,
@@ -47,7 +48,7 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   footerIcon: {
-    backgroundColor: colors.GRAY_100,
+    backgroundColor: colors.GRAY_200,
     padding: 10,
     borderRadius: 4,
   },
