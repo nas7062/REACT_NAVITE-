@@ -8,15 +8,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ActionSheetProvider } from "@expo/react-native-action-sheet";
 import { useReactQueryDevTools } from "@dev-plugins/react-query";
 
-// Notifications.setNotificationHandler({
-//   handleNotification: async () => ({
-//     shouldPlaySound: true,
-//     shouldSetBadge: true,
-//     shouldShowBanner: true,
-//     shouldShowList: true,
-//   }),
-// });
-
 const queryClient = new QueryClient();
 export default function RootLayout() {
   useReactQueryDevTools(queryClient);
@@ -29,11 +20,11 @@ export default function RootLayout() {
             <AuthProvider>
               <Slot />
               <StatusBar style="auto" />
+              <Toast />
             </AuthProvider>
           </ThemeProvider>
         </QueryClientProvider>
       </ActionSheetProvider>
-      <Toast />
     </>
   );
 }

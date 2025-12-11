@@ -1,7 +1,8 @@
 // components/RequireAuthScreen.tsx
-import { ReactNode } from "react";
-import { Redirect } from "expo-router";
+import { ReactNode, useEffect } from "react";
+import { useRouter } from "expo-router";
 import { useAuth } from "@/context/AuthContext";
+import { View, ActivityIndicator, Text } from "react-native";
 
 type Props = {
   children: ReactNode;
@@ -9,14 +10,28 @@ type Props = {
 
 export default function RequireAuthScreen({ children }: Props) {
   const { user, loading } = useAuth();
+  const router = useRouter();
 
-  if (loading) {
-    // 로딩 중이면 스켈레톤/로딩 뷰 넣어도 됨
-    return null;
-  }
+  console.log(!!user, loading);
+  useEffect(() => {
+    if (!loading && !user) {
+      router.replace("/auth");
+    }
+  }, [loading, user, router]);
 
-  if (!user) {
-    return <Redirect href="/auth" />;
+  if (loading || !user) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <ActivityIndicator />
+        <Text>로그인 상태 확인 중...</Text>
+      </View>
+    );
   }
 
   return <>{children}</>;

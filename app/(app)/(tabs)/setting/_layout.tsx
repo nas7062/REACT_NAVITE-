@@ -11,7 +11,7 @@ export default function SettingLayout() {
         name="index"
         options={{
           title: "설정",
-          headerShown: false,
+          headerShown: true,
           headerTitleAlign: "center",
         }}
       />

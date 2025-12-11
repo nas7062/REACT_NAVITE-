@@ -99,8 +99,8 @@ export default function ProfileUpdateScreen() {
             )}
           </View>
         </KeyboardAwareScrollView>
+        <CTAButton label="프로필 변경" onPress={handleSubmit(onHandleSignup)} />
       </SafeAreaView>
-      <CTAButton label="프로필 변경" onPress={handleSubmit(onHandleSignup)} />
     </RequireAuthScreen>
   );
 }

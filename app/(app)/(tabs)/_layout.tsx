@@ -12,7 +12,7 @@ export default function TabLayout() {
     >
       <Tabs.Screen
         name="index"
-        options={{  
+        options={{
           title: "홈",
           tabBarIcon: ({ color, focused }) => (
             <Ionicons

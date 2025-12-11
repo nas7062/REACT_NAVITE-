@@ -1,3 +1,4 @@
+// context/AuthContext.tsx
 import React, {
   createContext,
   useContext,
@@ -24,38 +25,40 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [justSignedIn, setJustSignedIn] = useState(false);
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      setUser(firebaseUser);
-      if (firebaseUser) {
-        const userRef = doc(db, "users", firebaseUser.uid);
-        const snap = await getDoc(userRef);
+      setLoading(true); // ✅ 상태 변경 시작
 
-        if (snap.exists()) {
-          setProfile(snap.data() as UserProfile);
-          setJustSignedIn(true);
+      try {
+        setUser(firebaseUser);
+
+        if (firebaseUser) {
+          const userRef = doc(db, "users", firebaseUser.uid);
+          const snap = await getDoc(userRef);
+
+          if (snap.exists()) {
+            setProfile(snap.data() as UserProfile);
+            setJustSignedIn(true);
+          } else {
+            setProfile(null);
+          }
         } else {
           setProfile(null);
+          setJustSignedIn(false);
         }
-      } else {
+      } catch (e) {
+        console.log("Auth 상태 처리 중 에러:", e);
         setProfile(null);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     });
 
     return unsubscribe;
   }, []);
-
-  // const { expoPushToken } = usePushNotification();
-
-  // useEffect(() => {
-  //   if (!user || !expoPushToken) return;
-
-  //   const userRef = doc(db, "users", user.uid);
-  //   setDoc(userRef, { pushTokens: arrayUnion(expoPushToken) }, { merge: true });
-  // }, [user, expoPushToken]);
 
   useEffect(() => {
     if (!user) return;

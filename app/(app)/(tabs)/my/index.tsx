@@ -8,7 +8,7 @@ import { router } from "expo-router";
 import { useRef, useState } from "react";
 import { Image, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-export default function MyScreen() {
+export default function MyProfileScreen() {
   const { profile } = useAuth();
 
   const [currentTab, setCurrentTab] = useState(0);

@@ -9,14 +9,14 @@ type NativePagerProps = {
 
 export default function NativePager({ currentTab }: NativePagerProps) {
   const content = useMemo(() => {
-    return currentTab === 0 ? <MyFeedList key="my" /> : <LikeFeedList key="like" />;
+    return currentTab === 0 ? (
+      <MyFeedList key="my" />
+    ) : (
+      <LikeFeedList key="like" />
+    );
   }, [currentTab]);
 
-  return (
-    <View style={styles.container}>
-      {content}
-    </View>
-  );
+  return <View style={styles.container}>{content}</View>;
 }
 
 const styles = StyleSheet.create({
