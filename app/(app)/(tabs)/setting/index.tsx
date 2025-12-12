@@ -1,3 +1,4 @@
+import { saveStorage } from "@/app/util/secureStore";
 import ListItem from "@/components/ListItem";
 import { useActionSheet } from "@expo/react-native-action-sheet";
 import { useTranslation } from "react-i18next";
@@ -20,11 +21,11 @@ export default function SettingScreen() {
         switch (selectedIndex) {
           case 0:
             i18n.changeLanguage("en");
-
+            saveStorage("language", "en");
             break;
           case 1:
             i18n.changeLanguage("ko");
-
+            saveStorage("language", "ko");
             break;
           case cancelButtonIndex:
             break;
