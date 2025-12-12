@@ -57,6 +57,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "semibold",
     color: colors.WHITE,
+    fontFamily: "NoonnuBasic",
   },
   outliendContainer: {
     borderWidth: 2,
@@ -64,6 +65,7 @@ const styles = StyleSheet.create({
   },
   outliendLabel: {
     color: colors.WHITE,
+    fontFamily: "NoonnuBasic",
   },
   standardContainer: {
     backgroundColor: colors.WHITE,
@@ -72,6 +74,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "semibold",
     color: colors.PRIMARY,
+    fontFamily: "NoonnuBasic",
   },
   mediumLabel: { fontSize: 13 },
   smallLabel: { fontSize: 12 },

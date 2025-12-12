@@ -16,6 +16,7 @@ export default function ProfileLayout() {
           title: "유저 프로필",
           headerTitleAlign: "center",
           headerShown: true,
+          headerTitleStyle: { fontFamily: "NoonnuBasic" },
         }}
       />
     </Stack>

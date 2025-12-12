@@ -138,6 +138,7 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 16,
     fontWeight: "bold",
+    fontFamily: "NoonnuBasic",
   },
   logoutBtn: {
     backgroundColor: colors.PRIMARY,

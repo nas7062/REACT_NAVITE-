@@ -16,6 +16,7 @@ export default function ImageLayout() {
           title: "이미지 존",
           headerTitleAlign: "center",
           headerShown: true,
+          headerTitleStyle: { fontFamily: "NoonnuBasic" },
         }}
       />
     </Stack>

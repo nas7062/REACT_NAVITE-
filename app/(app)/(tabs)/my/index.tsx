@@ -108,9 +108,11 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 20,
     fontWeight: "bold",
+    fontFamily: "NoonnuBasic",
   },
   descript: {
     fontSize: 12,
+    fontFamily: "NoonnuBasic",
   },
   profileImg: {
     width: 140,
@@ -135,6 +137,7 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 16,
     fontWeight: "bold",
+    fontFamily: "NoonnuBasic",
   },
   logoutBtn: {
     backgroundColor: colors.PRIMARY,

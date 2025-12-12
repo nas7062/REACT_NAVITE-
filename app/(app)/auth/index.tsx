@@ -112,10 +112,12 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 48,
     color: colors.WHITE,
+    fontFamily: "NoonnuBasic",
   },
   subTitle: {
     fontSize: 20,
     color: colors.WHITE,
+    fontFamily: "NoonnuBasic",
   },
   input: {
     width: "100%",
@@ -132,12 +134,15 @@ const styles = StyleSheet.create({
   },
   message: {
     color: colors.GRAY_700,
+    fontFamily: "NoonnuBasic",
   },
   signUpText: {
     textDecorationLine: "underline",
+    fontFamily: "NoonnuBasic",
   },
   errorMessage: {
     color: colors.ORANGE_600,
     fontSize: 12,
+    fontFamily: "NoonnuBasic",
   },
 });

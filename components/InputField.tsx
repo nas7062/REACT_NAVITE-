@@ -65,11 +65,13 @@ const styles = StyleSheet.create({
     padding: 0,
     flex: 1,
     color: colors.GRAY_700,
+    fontFamily: "NoonnuBasic",
   },
   label: {
     fontSize: 12,
     color: colors.GRAY_700,
     marginBottom: 5,
+    fontFamily: "NoonnuBasic",
   },
   multiline: {
     alignItems: "flex-start",

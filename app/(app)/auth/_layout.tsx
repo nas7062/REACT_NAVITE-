@@ -25,6 +25,7 @@ export default function AuthLayout() {
               <Ionicons name={"home"} size={30} style={{ marginLeft: 10 }} />
             </TouchableOpacity>
           ),
+          headerTitleStyle: { fontFamily: "NoonnuBasic" },
         }}
       />
       <Stack.Screen
@@ -33,6 +34,7 @@ export default function AuthLayout() {
           title: "회원가입",
           headerTitleAlign: "center",
           headerShown: true,
+          headerTitleStyle: { fontFamily: "NoonnuBasic" },
         }}
       />
     </Stack>

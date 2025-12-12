@@ -128,11 +128,13 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: colors.PRIMARY,
     fontSize: 12,
+    fontFamily: "NoonnuBasic",
   },
   cancleButton: {
     fontWeight: "bold",
     color: colors.BLACK,
     fontSize: 12,
+    fontFamily: "NoonnuBasic",
   },
 });
 

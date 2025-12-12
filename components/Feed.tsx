@@ -168,18 +168,22 @@ const styles = StyleSheet.create({
   title: {
     fontWeight: "bold",
     fontSize: 14,
+    fontFamily: "NoonnuBasic",
   },
   descript: {
     fontSize: 12,
     color: colors.GRAY_700,
+    fontFamily: "NoonnuBasic",
   },
   comments: {
     fontSize: 10,
     color: colors.GRAY_700,
+    fontFamily: "NoonnuBasic",
   },
   sub: {
     fontSize: 10,
     color: colors.GRAY_700,
+    fontFamily: "NoonnuBasic",
   },
   subContainer: {
     flexDirection: "row",

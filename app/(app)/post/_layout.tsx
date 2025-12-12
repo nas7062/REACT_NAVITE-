@@ -16,6 +16,7 @@ export default function AuthLayout() {
           title: "글쓰기",
           headerTitleAlign: "center",
           headerShown: true,
+          headerTitleStyle: { fontFamily: "NoonnuBasic" },
         }}
       />
       <Stack.Screen
@@ -24,6 +25,7 @@ export default function AuthLayout() {
           title: "글상세",
           headerTitleAlign: "center",
           headerShown: true,
+          headerTitleStyle: { fontFamily: "NoonnuBasic" },
         }}
       />
       <Stack.Screen
@@ -32,6 +34,7 @@ export default function AuthLayout() {
           title: "글수정",
           headerTitleAlign: "center",
           headerShown: true,
+          headerTitleStyle: { fontFamily: "NoonnuBasic" },
         }}
       />
       <Stack.Screen
@@ -40,6 +43,7 @@ export default function AuthLayout() {
           title: "검색",
           headerTitleAlign: "center",
           headerShown: false,
+          headerTitleStyle: { fontFamily: "NoonnuBasic" },
         }}
       />
     </Stack>

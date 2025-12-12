@@ -23,6 +23,7 @@ export default function TabLayout() {
               color={color}
             />
           ),
+          headerTitleStyle: { fontFamily: "NoonnuBasic" },
         }}
       />
       <Tabs.Screen
@@ -36,6 +37,7 @@ export default function TabLayout() {
               color={color}
             />
           ),
+          headerTitleStyle: { fontFamily: "NoonnuBasic" },
         }}
       />
       <Tabs.Screen
@@ -49,6 +51,7 @@ export default function TabLayout() {
               color={color}
             />
           ),
+          headerTitleStyle: { fontFamily: "NoonnuBasic" },
         }}
       />
     </Tabs>

@@ -13,6 +13,7 @@ export default function SettingLayout() {
           title: "설정",
           headerShown: true,
           headerTitleAlign: "center",
+          headerTitleStyle: { fontFamily: "NoonnuBasic" },
         }}
       />
     </Stack>

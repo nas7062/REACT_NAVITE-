@@ -22,7 +22,7 @@ i18n.use(initReactI18next).init({
 
 export default function AppStackLayout() {
   const [loaded] = useFonts({
-    NoonnuBasicGothicRegular: require("@/assets/font/NoonnuBasicGothicRegular.ttf"),
+    NoonnuBasic: require("@/assets/font/NoonnuBasicGothicRegular.ttf"),
   });
 
   useEffect(() => {
@@ -52,13 +52,38 @@ export default function AppStackLayout() {
   return (
     <Stack screenOptions={{ headerShown: false }}>
       {/* 탭 그룹 */}
-      <Stack.Screen name="(tabs)" />
+      <Stack.Screen
+        name="(tabs)"
+        options={{
+          headerTitleStyle: { fontFamily: "NoonnuBasic" },
+        }}
+      />
 
       {/* 탭에서 push 되어 가는 화면들 */}
-      <Stack.Screen name="post" />
-      <Stack.Screen name="auth" />
-      <Stack.Screen name="profile" />
-      <Stack.Screen name="image" />
+      <Stack.Screen
+        name="post"
+        options={{
+          headerTitleStyle: { fontFamily: "NoonnuBasic" },
+        }}
+      />
+      <Stack.Screen
+        name="auth"
+        options={{
+          headerTitleStyle: { fontFamily: "NoonnuBasic" },
+        }}
+      />
+      <Stack.Screen
+        name="profile"
+        options={{
+          headerTitleStyle: { fontFamily: "NoonnuBasic" },
+        }}
+      />
+      <Stack.Screen
+        name="image"
+        options={{
+          headerTitleStyle: { fontFamily: "NoonnuBasic" },
+        }}
+      />
     </Stack>
   );
 }
